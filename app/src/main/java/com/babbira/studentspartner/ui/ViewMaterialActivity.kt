@@ -20,7 +20,7 @@ class ViewMaterialActivity : AppCompatActivity() {
         // Get subject name from intent
         val subjectName = intent.getStringExtra(EXTRA_SUBJECT_NAME) ?: return
 
-      
+
 
         // Set up bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
