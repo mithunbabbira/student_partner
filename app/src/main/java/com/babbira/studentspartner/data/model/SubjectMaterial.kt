@@ -1,5 +1,9 @@
 package com.babbira.studentspartner.data.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class SubjectMaterial(
     val id: String = "",
     val title: String = "",
@@ -11,4 +15,4 @@ data class SubjectMaterial(
     val description: String = "",
     val chapterNumber: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
-) 
+) : Parcelable 

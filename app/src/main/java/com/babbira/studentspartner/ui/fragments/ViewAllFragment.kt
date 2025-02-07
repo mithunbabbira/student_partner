@@ -20,18 +20,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class ViewAllFragment : Fragment() {
     companion object {
-        private const val ARG_SUBJECT_NAME = "subject_name"
+        private const val ARG_MATERIALS = "materials"
 
-        fun newInstance(subjectName: String): ViewAllFragment {
+        fun newInstance(materials: List<SubjectMaterial>): ViewAllFragment {
             return ViewAllFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_SUBJECT_NAME, subjectName)
+                    putParcelableArrayList(ARG_MATERIALS, ArrayList(materials))
                 }
             }
         }
     }
-
-
 
     private lateinit var binding: FragmentViewAllBinding
     private lateinit var materialAdapter: MaterialAdapter
@@ -47,11 +45,10 @@ class ViewAllFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        fetchMaterials()
+        loadMaterials()
     }
 
     private fun setupRecyclerView() {
@@ -62,44 +59,19 @@ class ViewAllFragment : Fragment() {
         }
     }
 
-    private fun fetchMaterials() {
-        // Show loading progress
-        binding.progressBar.isVisible = true
-
-
-
-        val college = UserDetails.getUserCollege(requireContext())
-        val combination = UserDetails.getUserCombination(requireContext())
-        val semester = UserDetails.getUserSemester(requireContext())
-        val subjectName = arguments?.getString(ViewAllFragment.ARG_SUBJECT_NAME)
-
-        if (subjectName != null) {
-            db.collection("collegeList")
-                .document(college)
-                .collection("combination")
-                .document(combination)
-                .collection("semesters")
-                .document(semester)
-                .collection("subjectList")
-                .document(subjectName)
-                .collection("materials")
-                .get()
-                .addOnSuccessListener { documents ->
-                    materialsList.clear()
-                    for (document in documents) {
-                        val material = document.toObject(SubjectMaterial::class.java)
-                        materialsList.add(material)
-                    }
-                    materialAdapter.notifyDataSetChanged()
-                    binding.progressBar.isVisible = false
-
-                    // Show empty state if no materials
-                    binding.tvEmptyState.isVisible = materialsList.isEmpty()
-                }
-                .addOnFailureListener { e ->
-                    binding.progressBar.isVisible = false
-                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-                }
+    private fun loadMaterials() {
+        arguments?.getParcelableArrayList<SubjectMaterial>(ARG_MATERIALS)?.let { materials ->
+            materialsList.clear()
+            materialsList.addAll(materials)
+            materialAdapter.notifyDataSetChanged()
+            binding.tvEmptyState.isVisible = materialsList.isEmpty()
         }
+    }
+
+    fun updateMaterials(newMaterials: List<SubjectMaterial>) {
+        materialsList.clear()
+        materialsList.addAll(newMaterials)
+        materialAdapter.notifyDataSetChanged()
+        binding.tvEmptyState.isVisible = materialsList.isEmpty()
     }
 } 
