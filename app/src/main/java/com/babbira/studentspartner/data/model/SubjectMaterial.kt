@@ -5,6 +5,7 @@ data class SubjectMaterial(
     val title: String = "",
     val pdfUrl: String = "",
     val addedBy: String = "",
+    val userId: String = "",
     val section: String = "",
     val semester: String = "",
     val description: String = "",

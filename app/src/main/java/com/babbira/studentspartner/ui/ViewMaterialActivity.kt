@@ -33,7 +33,7 @@ class ViewMaterialActivity : AppCompatActivity() {
                 }
                 R.id.navigation_view_all -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, ViewAllFragment())
+                        .replace(R.id.fragment_container, ViewAllFragment.newInstance(subjectName!!))
                         .commit()
                     true
                 }
