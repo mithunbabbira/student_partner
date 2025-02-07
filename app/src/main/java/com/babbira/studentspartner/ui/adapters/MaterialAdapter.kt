@@ -1,8 +1,10 @@
 package com.babbira.studentspartner.adapters
 
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
 import android.view.LayoutInflater
@@ -26,12 +28,12 @@ class MaterialAdapter(
         onDeleteClickListener = listener
     }
 
-    class MaterialViewHolder(
+    inner class MaterialViewHolder(
         private val binding: ItemMaterialBinding,
         private val context: Context
     ) : RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(material: SubjectMaterial, onDeleteClickListener: ((SubjectMaterial) -> Unit)?) {
+        fun bind(material: SubjectMaterial) {
             binding.apply {
                 tvTitle.text = material.title
                 tvDescription.text = material.description
@@ -53,14 +55,14 @@ class MaterialAdapter(
             val fileName = "${material.title}.pdf"
             val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
 
-            if (file.exists()) {
-                openPdf(file)
+            if (file.exists() && file.length() > 0) {
+                openPdf(file, material)
             } else {
-                downloadPdf(material.pdfUrl, fileName)
+                downloadPdf(material.pdfUrl, fileName, material)
             }
         }
 
-        private fun downloadPdf(url: String, fileName: String) {
+        private fun downloadPdf(url: String, fileName: String, material: SubjectMaterial) {
             binding.btnView.isVisible = false
             binding.progressDownload.isVisible = true
 
@@ -71,22 +73,71 @@ class MaterialAdapter(
                 .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, fileName)
 
             val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            downloadManager.enqueue(request)
+            val downloadId = downloadManager.enqueue(request)
 
-            // You might want to register a BroadcastReceiver to handle download completion
-            // For now, we'll just show the button again after a delay
-            binding.root.postDelayed({
-                binding.btnView.isVisible = true
-                binding.progressDownload.isVisible = false
-                val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
-                if (file.exists()) {
-                    openPdf(file)
+            // Create a BroadcastReceiver to monitor download completion
+            val onComplete = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (id == downloadId) {
+                        context?.unregisterReceiver(this)
+                        binding.btnView.isVisible = true
+                        binding.progressDownload.isVisible = false
+
+                        val file = File(context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
+                        if (file.exists() && file.length() > 0) {
+                            openPdf(file, material)
+                        } else {
+                            Toast.makeText(context, "Failed to download PDF. Please try again.", Toast.LENGTH_LONG).show()
+                            file.delete() // Delete the potentially corrupted file
+                        }
+                    }
                 }
-            }, 2000)
+            }
+
+            // Register the BroadcastReceiver
+            context.registerReceiver(
+                onComplete,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            )
+
+            // Add download status check
+            val query = DownloadManager.Query().setFilterById(downloadId)
+            Thread {
+                var downloading = true
+                while (downloading) {
+                    val cursor = downloadManager.query(query)
+                    cursor.moveToFirst()
+                    
+                    when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                        DownloadManager.STATUS_FAILED -> {
+                            downloading = false
+                            binding.root.post {
+                                binding.btnView.isVisible = true
+                                binding.progressDownload.isVisible = false
+                                Toast.makeText(context, "Download failed. Please try again.", Toast.LENGTH_LONG).show()
+                            }
+                            context.unregisterReceiver(onComplete)
+                        }
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            downloading = false
+                        }
+                    }
+                    cursor.close()
+                    Thread.sleep(1000)
+                }
+            }.start()
         }
 
-        private fun openPdf(file: File) {
+        private fun openPdf(file: File, material: SubjectMaterial) {
             try {
+                if (!file.exists() || file.length() == 0L) {
+                    Toast.makeText(context, "Invalid PDF file. Retrying download...", Toast.LENGTH_LONG).show()
+                    file.delete()
+                    downloadPdf(material.pdfUrl, file.name, material)
+                    return
+                }
+
                 val uri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.provider",
@@ -96,10 +147,19 @@ class MaterialAdapter(
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(uri, "application/pdf")
                     flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                context.startActivity(intent)
+
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "No PDF viewer app found", Toast.LENGTH_LONG).show()
+                }
             } catch (e: Exception) {
                 Toast.makeText(context, "Error opening PDF: ${e.message}", Toast.LENGTH_LONG).show()
+                // If there's an error, delete the file and try downloading again
+                file.delete()
+                downloadPdf(material.pdfUrl, file.name, material)
             }
         }
     }
@@ -114,7 +174,7 @@ class MaterialAdapter(
     }
 
     override fun onBindViewHolder(holder: MaterialViewHolder, position: Int) {
-        holder.bind(materials[position], onDeleteClickListener)
+        holder.bind(materials[position])
     }
 
     override fun getItemCount() = materials.size
