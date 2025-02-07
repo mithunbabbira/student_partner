@@ -156,14 +156,28 @@ app/
    - Faculty role
    - Admin role for content management
 
+## Navigation
+
+The app uses Bottom Navigation with two main sections:
+1. Chapter Wise - Browse materials organized by chapters
+2. Add New - Upload new study materials
+
 ## Contributing
-[Add contribution guidelines if open source]
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
-[Add your license information]
+
+[Add your license here]
 
 ## Contact
-[Add your contact information]
+
+Your Name - [your.email@example.com]
+Project Link: [https://github.com/yourusername/studentspartner]
 
 ### Core Functionality Details
 
