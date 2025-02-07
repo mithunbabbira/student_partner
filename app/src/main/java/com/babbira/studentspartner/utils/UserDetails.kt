@@ -60,16 +60,16 @@ object UserDetails {
         return getPreferences(context).getString(Constants.PreferenceKeys.USER_COLLEGE, "") ?: ""
     }
 
-    // User Subject
-    fun setUserSubject(context: Context, subject: String) {
+    // User Combination
+    fun setUserCombination(context: Context, combination: String) {
         getEditor(context).apply {
-            putString(Constants.PreferenceKeys.USER_SUBJECT, subject)
+            putString(Constants.PreferenceKeys.USER_COMBINATION, combination)
             apply()
         }
     }
 
-    fun getUserSubject(context: Context): String {
-        return getPreferences(context).getString(Constants.PreferenceKeys.USER_SUBJECT, "") ?: ""
+    fun getUserCombination(context: Context): String {
+        return getPreferences(context).getString(Constants.PreferenceKeys.USER_COMBINATION, "") ?: ""
     }
 
     // User Semester

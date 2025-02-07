@@ -8,8 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.babbira.studentspartner.R
 import com.babbira.studentspartner.utils.UserDetails
-import com.babbira.studentspartner.utils.UserDetails.setUserEmail
-import com.babbira.studentspartner.utils.UserDetails.setUserName
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -17,7 +15,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.babbira.studentspartner.databinding.ActivityMainBinding
 import com.babbira.studentspartner.adapter.SubjectListAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.babbira.studentspartner.data.model.SubjectMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
@@ -93,18 +90,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         val college = UserDetails.getUserCollege(this)
-        val subject = UserDetails.getUserSubject(this)
+        val combination = UserDetails.getUserCombination(this)
         val semester = UserDetails.getUserSemester(this)
 
-        if (college.isEmpty() || subject.isEmpty() || semester.isEmpty()) {
+        if (college.isEmpty() || combination.isEmpty() || semester.isEmpty()) {
             Log.e("MainActivity", "Missing user details")
             return
         }
 
         val subjectRef = db.collection("collegeList")
             .document(college)
-            .collection("subjects")
-            .document(subject)
+            .collection("combination")
+            .document(combination)
             .collection("semesters")
             .document(semester)
             .collection("subjectList")
@@ -165,18 +162,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchSubjectList() {
         val college = UserDetails.getUserCollege(this)
-        val subject = UserDetails.getUserSubject(this)
+        val combination = UserDetails.getUserCombination(this)
         val semester = UserDetails.getUserSemester(this)
 
-        if (college.isEmpty() || subject.isEmpty() || semester.isEmpty()) {
+        if (college.isEmpty() || combination.isEmpty() || semester.isEmpty()) {
             Log.e("MainActivity", "Missing user details")
             return
         }
 
         db.collection("collegeList")
             .document(college)
-            .collection("subjects")
-            .document(subject)
+            .collection("combination")
+            .document(combination)
             .collection("semesters")
             .document(semester)
             .collection("subjectList")
@@ -207,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 setUserEmail(this@MainActivity, document.getString("email") ?: "")
                 setUserPhone(this@MainActivity, document.getString("phone") ?: "")
                 setUserCollege(this@MainActivity, document.getString("college") ?: "")
-                setUserSubject(this@MainActivity, document.getString("subject") ?: "")
+                setUserCombination(this@MainActivity, document.getString("combination") ?: "")
                 setUserSemester(this@MainActivity, document.getString("semester") ?: "")
                 setUserSection(this@MainActivity, document.getString("section") ?: "")
                 setLoggedIn(this@MainActivity, true)
@@ -224,35 +221,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Function to add material to a subject (will be used later)
-    private fun addMaterialToSubject(
-        subjectName: String,
-        material: SubjectMaterial
-    ) {
-        val college = UserDetails.getUserCollege(this)
-        val subject = UserDetails.getUserSubject(this)
-        val semester = UserDetails.getUserSemester(this)
-
-        if (college.isEmpty() || subject.isEmpty() || semester.isEmpty()) {
-            Log.e("MainActivity", "Missing user details")
-            return
-        }
-
-        db.collection("collegeList")
-            .document(college)
-            .collection("subjects")
-            .document(subject)
-            .collection("semesters")
-            .document(semester)
-            .collection("subjectList")
-            .document(subjectName)
-            .collection("materials")
-            .add(material)
-            .addOnSuccessListener { documentReference ->
-                Log.d("MainActivity", "Material added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.e("MainActivity", "Error adding material", e)
-            }
-    }
 } 

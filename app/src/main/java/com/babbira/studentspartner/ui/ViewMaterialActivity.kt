@@ -1,6 +1,7 @@
 package com.babbira.studentspartner.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.babbira.studentspartner.R
 import com.babbira.studentspartner.databinding.ActivityViewMaterialBinding
@@ -17,7 +18,9 @@ class ViewMaterialActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Get subject name from intent
-        val subjectName = intent.getStringExtra("subject_name") ?: return
+        val subjectName = intent.getStringExtra(EXTRA_SUBJECT_NAME) ?: return
+
+      
 
         // Set up bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -36,7 +39,7 @@ class ViewMaterialActivity : AppCompatActivity() {
                 }
                 R.id.navigation_add_new -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, AddNewMaterialFragment())
+                        .replace(R.id.fragment_container, AddNewMaterialFragment.newInstance(subjectName!!))
                         .commit()
                     true
                 }

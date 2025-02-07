@@ -1,11 +1,7 @@
 package com.babbira.studentspartner.data.repository
 
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.tasks.await
 import android.util.Log
 import com.google.firebase.auth.ktx.auth
@@ -25,9 +21,9 @@ class CollegeRepository {
         Result.failure(e)
     }
 
-    suspend fun getSubjects(college: String): Result<List<String>> {
+    suspend fun combination(college: String): Result<List<String>> {
         return try {
-            Log.d(TAG, "Getting subjects for college: $college")
+            Log.d(TAG, "Getting combination for college: $college")
             
             // First check if the college document exists
             val collegeRef = db.collection("collegeList").document(college)
@@ -39,41 +35,41 @@ class CollegeRepository {
                 Log.w(TAG, "College document doesn't exist: $college")
                 Result.success(emptyList())
             } else {
-                // Then get the subjects collection
-                val subjectsRef = collegeRef.collection("subjects")
-                Log.d(TAG, "Subjects collection path: ${subjectsRef.path}")
+                // Then get the combination collection
+                val combinationsRef = collegeRef.collection("combination")
+                Log.d(TAG, "combination collection path: ${combinationsRef.path}")
                 
-                val subjects = subjectsRef.get().await()
-                Log.d(TAG, "Found ${subjects.documents.size} subjects")
-                Log.d(TAG, "Subject IDs: ${subjects.documents.map { it.id }}")
+                val combination = combinationsRef.get().await()
+                Log.d(TAG, "Found ${combination.documents.size} combination")
+                Log.d(TAG, "combination IDs: ${combination.documents.map { it.id }}")
                 
-                Result.success(subjects.documents.map { it.id })
+                Result.success(combination.documents.map { it.id })
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error getting subjects", e)
+            Log.e(TAG, "Error getting combination", e)
             Result.failure(e)
         }
     }
 
-    suspend fun getSemesters(college: String, subject: String): Result<List<String>> {
+    suspend fun getSemesters(college: String, combination: String): Result<List<String>> {
         return try {
-            Log.d(TAG, "Getting semesters for college: $college, subject: $subject")
+            Log.d(TAG, "Getting semesters for college: $college, combination: $combination")
             
-            // First check if the subject document exists
-            val subjectRef = db.collection("collegeList")
+            // First check if the combination document exists
+            val combinationRef = db.collection("collegeList")
                 .document(college)
-                .collection("subjects")
-                .document(subject)
+                .collection("combinations")
+                .document(combination)
             
-            val subjectDoc = subjectRef.get().await()
-            Log.d(TAG, "Subject document exists: ${subjectDoc.exists()}")
+            val combinationDoc = combinationRef.get().await()
+            Log.d(TAG, "combination document exists: ${combinationDoc.exists()}")
             
-            if (!subjectDoc.exists()) {
-                Log.w(TAG, "Subject document doesn't exist: $subject")
+            if (!combinationDoc.exists()) {
+                Log.w(TAG, "combination document doesn't exist: $combination")
                 Result.success(emptyList())
             } else {
                 // Then get the semesters collection
-                val semestersRef = subjectRef.collection("semesters")
+                val semestersRef = combinationRef.collection("semesters")
                 Log.d(TAG, "Semesters collection path: ${semestersRef.path}")
                 
                 val semesters = semestersRef.get().await()
@@ -99,8 +95,8 @@ class CollegeRepository {
         Result.failure(e)
     }
 
-    suspend fun addSubject(college: String, subject: String): Result<Unit> = try {
-        Log.d(TAG, "Adding subject: $subject to college: $college")
+    suspend fun addCombination(college: String, combination: String): Result<Unit> = try {
+        Log.d(TAG, "Adding combination: $combination to college: $college")
         
         // First ensure college document exists
         val collegeRef = db.collection("collegeList").document(college)
@@ -112,16 +108,16 @@ class CollegeRepository {
             collegeRef.set(hashMapOf<String, Any>()).await()
         }
 
-        // Then add the subject document
-        val subjectRef = collegeRef.collection("subjects").document(subject)
-        Log.d(TAG, "Adding subject at path: ${subjectRef.path}")
-        
-        subjectRef.set(hashMapOf<String, Any>()).await()
-        Log.d(TAG, "Successfully added subject: $subject")
+        // Then add the combination document
+        val combinationRef = collegeRef.collection("combination").document(combination)
+        Log.d(TAG, "Adding combination at path: ${combinationRef.path}")
+
+        combinationRef.set(hashMapOf<String, Any>()).await()
+        Log.d(TAG, "Successfully added combination: $combination")
 
         Result.success(Unit)
     } catch (e: Exception) {
-        Log.e(TAG, "Error adding subject", e)
+        Log.e(TAG, "Error adding combination", e)
         Result.failure(e)
     }
 

@@ -4,7 +4,7 @@ data class UserProfile(
     val name: String? = null,
     val phone: String? = null,
     val college: String? = null,
-    val subject: String? = null,
+    val combination: String? = null,
     val semester: String? = null,
     val section: String? = null
-) 
+)

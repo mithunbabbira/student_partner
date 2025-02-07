@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.babbira.studentspartner.R
 import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
 import com.babbira.studentspartner.utils.DialogUtils
@@ -47,7 +46,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 val selectedCollege = text.toString()
                 clearDependentFields()
                 viewModel.setSelectedCollege(selectedCollege)
-                viewModel.fetchSubjects(selectedCollege)
+                viewModel.fetchCombination(selectedCollege)
                 binding.collegeInputLayout.setEndIconVisible(false)
             }
 
@@ -78,26 +77,26 @@ class ViewProfileActivity : AppCompatActivity() {
             }
         }
 
-        // Subject setup
-        binding.subjectInputLayout.apply {
+        // Combination setup
+        binding.combinationInputLayout.apply {
             setEndIconOnClickListener {
-                val newSubjectName = binding.subjectAutoComplete.text.toString().trim()
-                if (newSubjectName.isNotEmpty()) {
-                    showAddSubjectDialog(newSubjectName)
+                val newCombinationName = binding.combinationAutoComplete.text.toString().trim()
+                if (newCombinationName.isNotEmpty()) {
+                    showAddCombinationDialog(newCombinationName)
                 }
             }
         }
 
-        binding.subjectAutoComplete.apply {
+        binding.combinationAutoComplete.apply {
             setOnItemClickListener { _, _, _, _ ->
-                val selectedSubject = text.toString()
+                val selectedCombination = text.toString()
                 clearSemesterAndSection()
-                viewModel.setSelectedSubject(selectedSubject)
+                viewModel.setSelectedCombination(selectedCombination)
                 viewModel.fetchSemesters(
                     binding.collegeAutoComplete.text.toString(),
-                    selectedSubject
+                    selectedCombination
                 )
-                binding.subjectInputLayout.setEndIconVisible(false)
+                binding.combinationInputLayout.setEndIconVisible(false)
             }
 
             addTextChangedListener(object : TextWatcher {
@@ -108,10 +107,10 @@ class ViewProfileActivity : AppCompatActivity() {
                 override fun afterTextChanged(s: Editable?) {
                     val text = s?.toString() ?: ""
                     if (text.isEmpty()) {
-                        viewModel.fetchSubjects(binding.collegeAutoComplete.text.toString())
-                        binding.subjectInputLayout.setEndIconVisible(false)
+                        viewModel.fetchCombination(binding.collegeAutoComplete.text.toString())
+                        binding.combinationInputLayout.setEndIconVisible(false)
                     } else {
-                        viewModel.checkIfSubjectExists(text)
+                        viewModel.checkIfCombinationExists(text)
                     }
                 }
             })
@@ -147,7 +146,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 clearSection()
                 viewModel.fetchSections(
                     binding.collegeAutoComplete.text.toString(),
-                    binding.subjectAutoComplete.text.toString(),
+                    binding.combinationAutoComplete.text.toString(),
                     selectedSemester
                 )
             }
@@ -240,8 +239,8 @@ class ViewProfileActivity : AppCompatActivity() {
             setupSearchableDropdown(binding.collegeAutoComplete, colleges)
         }
 
-        viewModel.subjects.observe(this) { subjects ->
-            setupSearchableDropdown(binding.subjectAutoComplete, subjects)
+        viewModel.combination.observe(this) { combination ->
+            setupSearchableDropdown(binding.combinationAutoComplete, combination)
         }
 
         viewModel.semesters.observe(this) { semesters ->
@@ -256,8 +255,8 @@ class ViewProfileActivity : AppCompatActivity() {
             binding.collegeInputLayout.setEndIconVisible(show)
         }
 
-        viewModel.showAddSubjectButton.observe(this) { show ->
-            binding.subjectInputLayout.setEndIconVisible(show)
+        viewModel.showAddCombinationButton.observe(this) { show ->
+            binding.combinationInputLayout.setEndIconVisible(show)
         }
 
         viewModel.showAddSemesterButton.observe(this) { show ->
@@ -318,25 +317,25 @@ class ViewProfileActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showAddSubjectDialog(subjectName: String) {
+    private fun showAddCombinationDialog(combinationName: String) {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Add New Subject")
-            .setMessage("Do you want to add '$subjectName' to the list?")
+            .setTitle("Add New Combination")
+            .setMessage("Do you want to add '$combinationName' to the list?")
             .setPositiveButton("Add") { _, _ ->
-                viewModel.addNewSubject(subjectName)
+                viewModel.addNewCombination(combinationName)
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun clearDependentFields() {
-        binding.subjectAutoComplete.apply {
+        binding.combinationAutoComplete.apply {
             text.clear()
             dismissDropDown()
         }
         clearSemesterAndSection()
         // Reset validation
-        viewModel.setSelectedSubject("")
+        viewModel.setSelectedCombination("")
         viewModel.setSelectedSemester("")
         viewModel.setSelectedSection("")
     }
@@ -369,20 +368,20 @@ class ViewProfileActivity : AppCompatActivity() {
             nameEditText.setText(profile.name)
             phoneEditText.setText(profile.phone)
             collegeAutoComplete.setText(profile.college)
-            subjectAutoComplete.setText(profile.subject)
+            combinationAutoComplete.setText(profile.combination)
             semesterAutoComplete.setText(profile.semester)
             sectionAutoComplete.setText(profile.section)
 
             // Fetch dependent data if college exists
             profile.college?.let {
                 viewModel.setSelectedCollege(it)
-                viewModel.fetchSubjects(it)
+                viewModel.fetchCombination(it)
             }
 
-            // Fetch sections if subject exists
-            if (!profile.college.isNullOrEmpty() && !profile.subject.isNullOrEmpty()) {
-                viewModel.setSelectedSubject(profile.subject)
-                viewModel.fetchSections(profile.college, profile.subject, profile.semester ?: "")
+            // Fetch sections if combination exists
+            if (!profile.college.isNullOrEmpty() && !profile.combination.isNullOrEmpty()) {
+                viewModel.setSelectedCombination(profile.combination)
+                viewModel.fetchSections(profile.college, profile.combination, profile.semester ?: "")
             }
         }
     }

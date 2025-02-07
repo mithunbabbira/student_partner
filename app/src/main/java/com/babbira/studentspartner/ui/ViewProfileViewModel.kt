@@ -31,8 +31,8 @@ class ViewProfileViewModel(
     private val _colleges = MutableLiveData<List<String>>()
     val colleges: LiveData<List<String>> = _colleges
 
-    private val _subjects = MutableLiveData<List<String>>()
-    val subjects: LiveData<List<String>> = _subjects
+    private val _combination = MutableLiveData<List<String>>()
+    val combination: LiveData<List<String>> = _combination
 
     private val _semesters = MutableLiveData<List<String>>()
     val semesters: LiveData<List<String>> = _semesters
@@ -43,8 +43,8 @@ class ViewProfileViewModel(
     private val _showAddCollegeButton = MutableLiveData<Boolean>()
     val showAddCollegeButton: LiveData<Boolean> = _showAddCollegeButton
 
-    private val _showAddSubjectButton = MutableLiveData<Boolean>()
-    val showAddSubjectButton: LiveData<Boolean> = _showAddSubjectButton
+    private val _showAddCombinationButton = MutableLiveData<Boolean>()
+    val showAddCombinationButton: LiveData<Boolean> = _showAddCombinationButton
 
     private val _showAddSemesterButton = MutableLiveData<Boolean>()
     val showAddSemesterButton: LiveData<Boolean> = _showAddSemesterButton
@@ -53,11 +53,11 @@ class ViewProfileViewModel(
     val showAddSectionButton: LiveData<Boolean> = _showAddSectionButton
 
     private var typedCollegeName: String = ""
-    private var typedSubjectName: String = ""
+    private var typedCombinationName: String = ""
     private var typedSemesterName: String = ""
     private var typedSectionName: String = ""
     private var selectedCollege: String = ""
-    private var selectedSubject: String = ""
+    private var selectedCombination: String = ""
     private var selectedSemester: String = ""
 
     private val _error = MutableLiveData<String>()
@@ -89,7 +89,7 @@ class ViewProfileViewModel(
                     profile?.let {
                         // Update selected values
                         selectedCollege = it.college ?: ""
-                        selectedSubject = it.subject ?: ""
+                        selectedCombination = it.combination ?: ""
                         selectedSemester = it.semester ?: ""
                         selectedSection = it.section ?: ""
                         userName = it.name ?: ""
@@ -159,22 +159,22 @@ class ViewProfileViewModel(
         }
     }
 
-    fun fetchSubjects(college: String) {
-        Log.d(TAG, "Fetching subjects for college: $college")
+    fun fetchCombination(college: String) {
+        Log.d(TAG, "Fetching combination for college: $college")
         viewModelScope.launch {
-            repository.getSubjects(college)
-                .onSuccess { subjects ->
-                    Log.d(TAG, "Successfully fetched ${subjects.size} subjects")
-                    _subjects.value = subjects
+            repository.combination(college)
+                .onSuccess { combination ->
+                    Log.d(TAG, "Successfully fetched ${combination.size} combination")
+                    _combination.value = combination
                 }
                 .onFailure { error ->
-                    Log.e(TAG, "Error fetching subjects", error)
+                    Log.e(TAG, "Error fetching combination", error)
                     _error.value = error.message
                 }
         }
     }
 
-    fun fetchSemesters(college: String, subject: String) {
+    fun fetchSemesters(college: String, combination: String) {
         viewModelScope.launch {
             // Instead of fetching from repository, we'll use local list
             val semesters = (1..10).map { "${it}st" }
@@ -182,7 +182,7 @@ class ViewProfileViewModel(
         }
     }
 
-    fun fetchSections(college: String, subject: String, semester: String) {
+    fun fetchSections(college: String, combination: String, semester: String) {
         viewModelScope.launch {
             // Instead of fetching from repository, we'll use local list
             val sections = ('A'..'Z').map { it.toString() }
@@ -198,40 +198,40 @@ class ViewProfileViewModel(
         validateProfile()
     }
 
-    fun checkIfSubjectExists(typedText: String) {
-        val currentSubjects = _subjects.value ?: emptyList()
-        val subjectExists = currentSubjects.any { 
+    fun checkIfCombinationExists(typedText: String) {
+        val currentCombination = _combination.value ?: emptyList()
+        val combinationExists = currentCombination.any {
             it.equals(typedText.trim(), ignoreCase = true) 
         }
         
-        typedSubjectName = typedText.trim()
-        _showAddSubjectButton.value = !subjectExists && typedText.isNotEmpty()
+        typedCombinationName = typedText.trim()
+        _showAddCombinationButton.value = !combinationExists && typedText.isNotEmpty()
         
         // Update the filtered list
-        _subjects.value = currentSubjects.filter { 
+        _combination.value = currentCombination.filter {
             it.contains(typedText, ignoreCase = true) 
         }
     }
 
-    fun addNewSubject(subjectName: String) {
-        Log.d(TAG, "Adding new subject: $subjectName to college: $selectedCollege")
+    fun addNewCombination(combinationName: String) {
+        Log.d(TAG, "Adding new combination: $combinationName to college: $selectedCollege")
         viewModelScope.launch {
-            repository.addSubject(selectedCollege, subjectName)
+            repository.addCombination(selectedCollege, combinationName)
                 .onSuccess { 
-                    Log.d(TAG, "Successfully added subject: $subjectName")
-                    fetchSubjects(selectedCollege)
-                    _error.value = "Subject added successfully"
+                    Log.d(TAG, "Successfully added combination: $combinationName")
+                    fetchCombination(selectedCollege)
+                    _error.value = "combination added successfully"
                 }
                 .onFailure { error ->
-                    Log.e(TAG, "Error adding subject", error)
+                    Log.e(TAG, "Error adding combination", error)
                     _error.value = error.message
                 }
         }
     }
 
-    fun setSelectedSubject(subject: String) {
-        Log.d(TAG, "Setting selected subject: $subject")
-        selectedSubject = subject
+    fun setSelectedCombination(combination: String) {
+        Log.d(TAG, "Setting selected combination: $combination")
+        selectedCombination = combination
         validateProfile()
     }
 
@@ -272,7 +272,7 @@ class ViewProfileViewModel(
         val isValid = userName.isNotEmpty() &&
                 phoneNumber.isNotEmpty() &&
                 selectedCollege.isNotEmpty() &&
-                selectedSubject.isNotEmpty() &&
+                selectedCombination.isNotEmpty() &&
                 selectedSemester.isNotEmpty() &&
                 selectedSection.isNotEmpty()
 
@@ -303,7 +303,7 @@ class ViewProfileViewModel(
                 "name" to name,
                 "phone" to phone,
                 "college" to selectedCollege,
-                "subject" to selectedSubject,
+                "combination" to selectedCombination,
                 "semester" to selectedSemester,
                 "section" to selectedSection,
                 "updatedAt" to FieldValue.serverTimestamp()
