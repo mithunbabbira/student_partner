@@ -19,7 +19,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import android.view.View
 
-class ViewMaterialActivity : AppCompatActivity() {
+import com.babbira.studentspartner.ui.fragments.AddNewMaterialListener
+
+class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
     private lateinit var binding: ActivityViewMaterialBinding
     private val materialsList = mutableListOf<SubjectMaterial>()
     private val db = FirebaseFirestore.getInstance()
@@ -72,8 +74,11 @@ class ViewMaterialActivity : AppCompatActivity() {
     }
 
     private fun fetchMaterials(subjectName: String) {
-        // Show loading progress
         showLoading(true)
+        
+        // Hide ViewPager while loading
+        binding.viewPager.alpha = 0.5f
+        binding.viewPager.isEnabled = false
 
         val college = UserDetails.getUserCollege(this)
         val combination = UserDetails.getUserCombination(this)
@@ -97,9 +102,16 @@ class ViewMaterialActivity : AppCompatActivity() {
                 }
                 showLoading(false)
                 updateFragments()
+                
+                // Show ViewPager after loading
+                binding.viewPager.alpha = 1.0f
+                binding.viewPager.isEnabled = true
             }
             .addOnFailureListener { e ->
                 showLoading(false)
+                // Show ViewPager after error
+                binding.viewPager.alpha = 1.0f
+                binding.viewPager.isEnabled = true
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
@@ -130,6 +142,20 @@ class ViewMaterialActivity : AppCompatActivity() {
         // Get current fragments and update their materials
         val viewPagerAdapter = binding.viewPager.adapter as ViewPagerAdapter
         viewPagerAdapter.updateMaterials(materialsList)
+    }
+
+    override fun onMaterialUploaded() {
+        // Refresh materials
+        subjectName?.let { 
+            fetchMaterials(it)
+        }
+        
+        // Remove AddNewMaterialFragment and show ViewPager
+        supportFragmentManager.popBackStack()
+        binding.fragmentContainer.visibility = View.GONE
+        binding.viewPager.visibility = View.VISIBLE
+        binding.tabLayout.visibility = View.VISIBLE
+        binding.btnAddNew.visibility = View.VISIBLE
     }
 
     companion object {

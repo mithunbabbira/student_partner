@@ -1,6 +1,7 @@
 package com.babbira.studentspartner.ui.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
+// Add this interface at the top of the file, outside the class
+interface AddNewMaterialListener {
+    fun onMaterialUploaded()
+}
 
 class AddNewMaterialFragment : Fragment() {
     companion object {
@@ -67,6 +73,15 @@ class AddNewMaterialFragment : Fragment() {
                 "Storage permission is required to select PDF files",
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    private var listener: AddNewMaterialListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is AddNewMaterialListener) {
+            listener = context
         }
     }
 
@@ -226,6 +241,9 @@ class AddNewMaterialFragment : Fragment() {
                 binding.uploadProgress.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Material uploaded successfully", Toast.LENGTH_SHORT).show()
+                
+                // Notify activity and clear form
+                listener?.onMaterialUploaded()
                 clearForm()
             }
             .addOnFailureListener { e ->
@@ -302,5 +320,10 @@ class AddNewMaterialFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 } 
