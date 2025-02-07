@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -170,6 +171,9 @@ class AddNewMaterialFragment : Fragment() {
     }
 
     private fun saveMaterialToFirestore(pdfUrl: String) {
+        // Add log to verify input parameters
+        Log.d("AddMaterial", "Saving material with URL: $pdfUrl")
+        
         val material = SubjectMaterial(
             title = binding.titleEditText.text.toString().trim(),
             description = binding.descriptionEditText.text.toString().trim(),
@@ -180,11 +184,30 @@ class AddNewMaterialFragment : Fragment() {
             chapterNumber = binding.chapterDropdown.text.toString().toInt(),
             createdAt = System.currentTimeMillis()
         )
+        
+        // Log the material object
+        Log.d("AddMaterial", "Material object: $material")
 
         val college = UserDetails.getUserCollege(requireContext())
         val subject = UserDetails.getUserSubject(requireContext())
         val semester = UserDetails.getUserSemester(requireContext())
-        val subjectName = arguments?.getString("subject_name") ?: return
+        val subjectName = arguments?.getString("subject_name")
+        
+        // Log the path parameters
+        Log.d("AddMaterial", """
+            Firestore Path:
+            College: $college
+            Subject: $subject
+            Semester: $semester
+            SubjectName: $subjectName
+        """.trimIndent())
+
+        // Check if subjectName is null
+        if (subjectName == null) {
+            Log.e("AddMaterial", "Subject name is null!")
+            Toast.makeText(context, "Error: Subject name not found", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         db.collection("collegeList")
             .document(college)
@@ -197,12 +220,14 @@ class AddNewMaterialFragment : Fragment() {
             .collection("materials")
             .add(material)
             .addOnSuccessListener {
+                Log.d("AddMaterial", "Material successfully added with ID: ${it.id}")
                 binding.uploadProgress.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Material uploaded successfully", Toast.LENGTH_SHORT).show()
                 clearForm()
             }
             .addOnFailureListener { e ->
+                Log.e("AddMaterial", "Error adding material", e)
                 binding.uploadProgress.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Failed to save material: ${e.message}", Toast.LENGTH_SHORT).show()

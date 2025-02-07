@@ -1,5 +1,6 @@
 package com.babbira.studentspartner.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.babbira.studentspartner.R
@@ -7,6 +8,7 @@ import com.babbira.studentspartner.databinding.ActivityViewMaterialBinding
 import com.babbira.studentspartner.ui.fragments.AddNewMaterialFragment
 import com.babbira.studentspartner.ui.fragments.ChapterWiseFragment
 import com.babbira.studentspartner.ui.fragments.ViewAllFragment
+import androidx.fragment.app.Fragment
 
 class ViewMaterialActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewMaterialBinding
@@ -35,9 +37,7 @@ class ViewMaterialActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_add_new -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, AddNewMaterialFragment())
-                        .commit()
+                    loadFragment(AddNewMaterialFragment())
                     true
                 }
                 else -> false
@@ -48,6 +48,21 @@ class ViewMaterialActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             binding.bottomNavigation.selectedItemId = R.id.navigation_chapter_wise
         }
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        val bundle = Bundle().apply {
+            // Get the subject name from intent or wherever it's available
+            val subjectName = intent.getStringExtra("subject_name")
+            putString("subject_name", subjectName)
+        }
+        
+        fragment.arguments = bundle
+        
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
     }
 
     companion object {
