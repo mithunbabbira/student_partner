@@ -195,7 +195,31 @@ class AddNewMaterialFragment : Fragment() {
     }
 
     private fun saveMaterialToFirestore(pdfUrl: String) {
+        val college = UserDetails.getUserCollege(requireContext())
+        val combination = UserDetails.getUserCombination(requireContext())
+        val semester = UserDetails.getUserSemester(requireContext())
+        val subjectName = arguments?.getString(ARG_SUBJECT_NAME)
+
+        if (subjectName == null) {
+            Log.e("AddNewMaterial", "Subject name is null, cannot save material")
+            Toast.makeText(context, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Create a new document reference to get an ID
+        val docRef = db.collection("collegeList")
+            .document(college)
+            .collection("combination")
+            .document(combination)
+            .collection("semesters")
+            .document(semester)
+            .collection("subjectList")
+            .document(subjectName)
+            .collection("materials")
+            .document()  // This generates a new document ID
+
         val material = SubjectMaterial(
+            id = docRef.id,  // Use the generated ID directly
             title = binding.titleEditText.text.toString().trim(),
             description = binding.descriptionEditText.text.toString().trim(),
             pdfUrl = pdfUrl,
@@ -207,42 +231,12 @@ class AddNewMaterialFragment : Fragment() {
             createdAt = System.currentTimeMillis()
         )
 
-        val college = UserDetails.getUserCollege(requireContext())
-        val combination = UserDetails.getUserCombination(requireContext())
-        val semester = UserDetails.getUserSemester(requireContext())
-        val subjectName = arguments?.getString(ARG_SUBJECT_NAME)
-
-        // Add logging
-        Log.d("AddNewMaterial", "Saving material with details:")
-        Log.d("AddNewMaterial", "College: $college")
-        Log.d("AddNewMaterial", "Combination: $combination")
-        Log.d("AddNewMaterial", "Semester: $semester")
-        Log.d("AddNewMaterial", "Subject Name: $subjectName")
-        Log.d("AddNewMaterial", "Material: $material")
-
-        if (subjectName == null) {
-            Log.e("AddNewMaterial", "Subject name is null, cannot save material")
-            Toast.makeText(context, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        db.collection("collegeList")
-            .document(college)
-            .collection("combination")
-            .document(combination)
-            .collection("semesters")
-            .document(semester)
-            .collection("subjectList")
-            .document(subjectName)
-            .collection("materials")
-            .add(material)
+        docRef.set(material)
             .addOnSuccessListener {
-                Log.d("AddNewMaterial", "Material saved successfully with ID: ${it.id}")
+                Log.d("AddNewMaterial", "Material saved successfully with ID: ${docRef.id}")
                 binding.uploadProgress.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Material uploaded successfully", Toast.LENGTH_SHORT).show()
-                
-                // Notify activity and clear form
                 listener?.onMaterialUploaded()
                 clearForm()
             }
