@@ -17,15 +17,19 @@ import com.babbira.studentspartner.ui.fragments.AddNewMaterialFragment.Companion
 import com.babbira.studentspartner.utils.UserDetails
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import android.app.AlertDialog
 
 class ViewAllFragment : Fragment() {
     companion object {
         private const val ARG_MATERIALS = "materials"
+        private const val ARG_SUBJECT_NAME = "subjectName"
 
-        fun newInstance(materials: List<SubjectMaterial>): ViewAllFragment {
+        fun newInstance(materials: List<SubjectMaterial>, subjectName: String): ViewAllFragment {
             return ViewAllFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(ARG_MATERIALS, ArrayList(materials))
+                    putString(ARG_SUBJECT_NAME, subjectName)
                 }
             }
         }
@@ -53,6 +57,9 @@ class ViewAllFragment : Fragment() {
 
     private fun setupRecyclerView() {
         materialAdapter = MaterialAdapter(materialsList)
+        materialAdapter.setOnDeleteClickListener { material ->
+            showDeleteConfirmationDialog(material)
+        }
         binding.rvMaterials.apply {
             adapter = materialAdapter
             layoutManager = LinearLayoutManager(context)
@@ -73,5 +80,64 @@ class ViewAllFragment : Fragment() {
         materialsList.addAll(newMaterials)
         materialAdapter.notifyDataSetChanged()
         binding.tvEmptyState.isVisible = materialsList.isEmpty()
+    }
+
+    private fun showDeleteConfirmationDialog(material: SubjectMaterial) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Material")
+            .setMessage("Are you sure you want to delete this material?")
+            .setPositiveButton("Yes") { _, _ ->
+                deleteMaterial(material)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun deleteMaterial(material: SubjectMaterial) {
+        binding.progressBar.isVisible = true
+        
+        val college = UserDetails.getUserCollege(requireContext())
+        val combination = UserDetails.getUserCombination(requireContext())
+        val semester = UserDetails.getUserSemester(requireContext())
+        val subjectName = arguments?.getString(ARG_SUBJECT_NAME)
+
+        if (subjectName == null) {
+            Toast.makeText(context, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
+            binding.progressBar.isVisible = false
+            return
+        }
+
+        // Delete from Firebase Storage
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(material.pdfUrl)
+        storageRef.delete().addOnCompleteListener { storageTask ->
+            if (storageTask.isSuccessful) {
+                // Delete from Firestore
+                db.collection("collegeList")
+                    .document(college)
+                    .collection("combination")
+                    .document(combination)
+                    .collection("semesters")
+                    .document(semester)
+                    .collection("subjectList")
+                    .document(subjectName)
+                    .collection("materials")
+                    .document(material.id)
+                    .delete()
+                    .addOnSuccessListener {
+                        materialsList.remove(material)
+                        materialAdapter.notifyDataSetChanged()
+                        binding.tvEmptyState.isVisible = materialsList.isEmpty()
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(context, "Material deleted successfully", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { e ->
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(context, "Failed to delete material: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                binding.progressBar.isVisible = false
+                Toast.makeText(context, "Failed to delete file: ${storageTask.exception?.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 } 

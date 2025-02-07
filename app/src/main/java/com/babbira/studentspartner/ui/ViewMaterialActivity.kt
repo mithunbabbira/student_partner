@@ -121,15 +121,26 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
     }
 
     private fun setupViewPager() {
-        val viewPager = binding.viewPager
-        val tabLayout = binding.tabLayout
+        val subjectName = intent.getStringExtra(EXTRA_SUBJECT_NAME) ?: run {
+            Toast.makeText(this, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
-        val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
-        adapter.addFragment(ViewAllFragment.newInstance(materialsList), "View All")
-        adapter.addFragment(ChapterWiseFragment.newInstance(materialsList), "Chapter Wise")
+        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        
+        viewPagerAdapter.addFragment(
+            ViewAllFragment.newInstance(materialsList, subjectName),  // Pass both parameters
+            "View All"
+        )
+        viewPagerAdapter.addFragment(
+            ChapterWiseFragment.newInstance(materialsList),
+            "Chapter Wise"
+        )
 
-        viewPager.adapter = adapter
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        binding.viewPager.adapter = viewPagerAdapter
+        
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "View All"
                 1 -> "Chapter Wise"

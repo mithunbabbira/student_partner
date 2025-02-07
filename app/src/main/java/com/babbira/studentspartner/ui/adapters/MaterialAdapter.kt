@@ -13,22 +13,35 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.babbira.studentspartner.data.model.SubjectMaterial
 import com.babbira.studentspartner.databinding.ItemMaterialBinding
+import com.babbira.studentspartner.utils.UserDetails
 import java.io.File
 
 class MaterialAdapter(
     private val materials: List<SubjectMaterial>
 ) : RecyclerView.Adapter<MaterialAdapter.MaterialViewHolder>() {
 
+    private var onDeleteClickListener: ((SubjectMaterial) -> Unit)? = null
+
+    fun setOnDeleteClickListener(listener: (SubjectMaterial) -> Unit) {
+        onDeleteClickListener = listener
+    }
+
     class MaterialViewHolder(
         private val binding: ItemMaterialBinding,
         private val context: Context
     ) : RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(material: SubjectMaterial) {
+        fun bind(material: SubjectMaterial, onDeleteClickListener: ((SubjectMaterial) -> Unit)?) {
             binding.apply {
                 tvTitle.text = material.title
                 tvDescription.text = material.description
                 tvUploadedBy.text = "Uploaded by: ${material.addedBy}"
+                
+                // Show delete button only if current user is the uploader
+                btnDelete.isVisible = material.userId == UserDetails.getUserId(context)
+                btnDelete.setOnClickListener {
+                    onDeleteClickListener?.invoke(material)
+                }
                 
                 btnView.setOnClickListener {
                     downloadAndViewPdf(material)
@@ -101,7 +114,7 @@ class MaterialAdapter(
     }
 
     override fun onBindViewHolder(holder: MaterialViewHolder, position: Int) {
-        holder.bind(materials[position])
+        holder.bind(materials[position], onDeleteClickListener)
     }
 
     override fun getItemCount() = materials.size
