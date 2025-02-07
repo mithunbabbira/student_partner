@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "740968262592",
+    "project_id": "students-partner-app",
+    "storage_bucket": "students-partner-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740968262592:android:21852cba60d71643faf625",
+        "android_client_info": {
+          "package_name": "com.babbira.studentspartner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740968262592-em70104qm51j45kvbag7g27ss6g9d214.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.babbira.studentspartner",
+            "certificate_hash": "780478b64874d961e78ca1bfaa74d843b0b91a83"
+          }
+        },
+        {
+          "client_id": "740968262592-0k77vkvbchhq88ka20ptgduo1kvr7g4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBepriyC_0a9QWx5dtjutQevM1VbGP4ljs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740968262592-0k77vkvbchhq88ka20ptgduo1kvr7g4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
