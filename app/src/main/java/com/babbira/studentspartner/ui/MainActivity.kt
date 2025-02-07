@@ -20,6 +20,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.widget.Toolbar
+import android.view.MenuItem
+import android.view.Gravity
+import android.widget.TextView
+import androidx.core.view.GravityCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var subjectListAdapter: SubjectListAdapter
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +45,24 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         db = Firebase.firestore
+
+        // Initialize views
+        drawerLayout = binding.drawerLayout
+        navigationView = binding.navigationView
+        toolbar = binding.toolbar
+
+        // Setup toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu) // Hamburger icon
+        }
+
+        // Setup navigation drawer
+        setupNavigationDrawer()
+
+        // Update navigation header with user info
+        updateNavigationHeader()
 
         setupRecyclerView()
         setupAddSubjectButton()
@@ -221,4 +249,72 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupNavigationDrawer() {
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ViewProfileActivity::class.java))
+                }
+                R.id.nav_classmates -> {
+                    // Start classmates activity
+                    // startActivity(Intent(this, ClassmatesActivity::class.java))
+                }
+                R.id.nav_about -> {
+                    // Show about dialog or start about activity
+                    showAboutDialog()
+                }
+                R.id.nav_logout -> {
+                    showLogoutConfirmationDialog()
+                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+    }
+
+    private fun updateNavigationHeader() {
+        val headerView = navigationView.getHeaderView(0)
+        headerView.findViewById<TextView>(R.id.navHeaderName).text = UserDetails.getUserName(this)
+        headerView.findViewById<TextView>(R.id.navHeaderEmail).text = UserDetails.getUserEmail(this)
+    }
+
+    private fun showAboutDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("About Us")
+            .setMessage("Students Partner is an app designed to help students share and access study materials easily.")
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { _, _ ->
+                // Perform logout
+                FirebaseAuth.getInstance().signOut()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                drawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
 } 
