@@ -17,6 +17,7 @@ import com.babbira.studentspartner.data.model.SubjectMaterial
 import com.babbira.studentspartner.databinding.ItemMaterialBinding
 import com.babbira.studentspartner.utils.UserDetails
 import java.io.File
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MaterialAdapter(
     private val materials: List<SubjectMaterial>
@@ -138,26 +139,48 @@ class MaterialAdapter(
                     return
                 }
 
+                // Create URI using FileProvider
                 val uri = FileProvider.getUriForFile(
                     context,
                     "${context.packageName}.provider",
                     file
                 )
 
+                // Create intent with correct MIME type and flags
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(uri, "application/pdf")
-                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 }
 
-                if (intent.resolveActivity(context.packageManager) != null) {
+                try {
                     context.startActivity(intent)
-                } else {
-                    Toast.makeText(context, "No PDF viewer app found", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    // If no activity can handle PDF, try alternative method
+                    val alternativeIntent = Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(uri, "application/*")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    }
+                    
+                    try {
+                        context.startActivity(alternativeIntent)
+                    } catch (e: Exception) {
+                        // If still fails, show dialog to install PDF viewer
+                        MaterialAlertDialogBuilder(context)
+                            .setTitle("PDF Viewer Required")
+                            .setMessage("You need a PDF viewer app to open this file. Would you like to install one from Play Store?")
+                            .setPositiveButton("Install") { _, _ ->
+                                val marketIntent = Intent(Intent.ACTION_VIEW, 
+                                    Uri.parse("market://search?q=pdf+viewer&c=apps"))
+                                context.startActivity(marketIntent)
+                            }
+                            .setNegativeButton("Cancel", null)
+                            .show()
+                    }
                 }
             } catch (e: Exception) {
                 Toast.makeText(context, "Error opening PDF: ${e.message}", Toast.LENGTH_LONG).show()
-                // If there's an error, delete the file and try downloading again
                 file.delete()
                 downloadPdf(material.pdfUrl, file.name, material)
             }
