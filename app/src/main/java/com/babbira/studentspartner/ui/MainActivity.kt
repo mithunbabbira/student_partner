@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                     println("MainActivity: No user profile found, redirecting to profile creation")
                     // User doesn't exist, redirect to profile creation
                     startActivity(Intent(this, ViewProfileActivity::class.java))
-                    finish()
+                    
                 }
             }
             .addOnFailureListener { e ->

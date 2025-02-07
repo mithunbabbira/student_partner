@@ -271,6 +271,10 @@ class ViewProfileActivity : AppCompatActivity() {
             binding.updateProfileButton.isEnabled = !isUpdating
             binding.progressBar.isVisible = isUpdating
             binding.updateProfileButton.text = if (isUpdating) "" else "Update Profile"
+            
+            if (!isUpdating) {
+                finish()
+            }
         }
 
         viewModel.error.observe(this) { error ->
