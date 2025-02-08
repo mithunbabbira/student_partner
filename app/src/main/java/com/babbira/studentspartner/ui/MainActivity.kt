@@ -65,8 +65,12 @@ class MainActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupAddSubjectButton()
-        checkUserProfile()
         setupClickListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkUserProfile() // Check profile every time activity resumes
     }
 
     private fun setupRecyclerView() {
