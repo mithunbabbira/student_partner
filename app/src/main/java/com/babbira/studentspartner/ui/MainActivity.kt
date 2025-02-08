@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupAddSubjectButton()
         checkUserProfile()
+        setupClickListeners()
     }
 
     private fun setupRecyclerView() {
@@ -297,6 +298,26 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("No", null)
             .show()
+    }
+
+    private fun setupClickListeners() {
+        binding.apply {
+            viewClassTimetableButton.setOnClickListener {
+                startActivity(
+                    Intent(this@MainActivity, TimetableActivity::class.java).apply {
+                        putExtra(TimetableActivity.EXTRA_TIMETABLE_TYPE, TimetableActivity.TYPE_CLASS)
+                    }
+                )
+            }
+
+            viewExamTimetableButton.setOnClickListener {
+                startActivity(
+                    Intent(this@MainActivity, TimetableActivity::class.java).apply {
+                        putExtra(TimetableActivity.EXTRA_TIMETABLE_TYPE, TimetableActivity.TYPE_EXAM)
+                    }
+                )
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

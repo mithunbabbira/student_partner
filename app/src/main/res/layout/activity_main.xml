@@ -51,6 +51,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/viewClassTimetableButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
@@ -60,8 +61,7 @@
                         android:textAlignment="center"
                         app:icon="@drawable/ic_timetable"
                         app:iconGravity="top"
-                        app:iconSize="24dp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                        app:iconSize="24dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/viewExamTimetableButton"
