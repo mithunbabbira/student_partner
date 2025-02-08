@@ -6,8 +6,6 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatImageView
-import kotlin.math.max
-import kotlin.math.min
 
 class ZoomableImageView @JvmOverloads constructor(
     context: Context,
@@ -15,89 +13,51 @@ class ZoomableImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private var matrix = Matrix()
-    private var matrixValues = FloatArray(9)
-    private var scale = 1f
-    private var minScale = 1f
-    private var maxScale = 5f
-    
-    private var prevX = 0f
-    private var prevY = 0f
-    private var activePointerId = INVALID_POINTER_ID
-
-    private val scaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            scale *= detector.scaleFactor
-            scale = max(minScale, min(scale, maxScale))
-            
-            matrix.setScale(scale, scale)
-            matrix.postTranslate(
-                (width - scale * drawable.intrinsicWidth) / 2,
-                (height - scale * drawable.intrinsicHeight) / 2
-            )
-            imageMatrix = matrix
-            return true
-        }
-    })
+    private var scaleFactor = 1f
+    private val scaleDetector: ScaleGestureDetector
+    private val matrix = Matrix()
+    private var lastTouchX = 0f
+    private var lastTouchY = 0f
 
     init {
         scaleType = ScaleType.MATRIX
-    }
+        scaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                scaleFactor *= detector.scaleFactor
+                // Don't let the object get too small or too large
+                scaleFactor = scaleFactor.coerceIn(0.1f, 10.0f)
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        if (drawable != null) {
-            matrix.setScale(scale, scale)
-            matrix.postTranslate(
-                (width - scale * drawable.intrinsicWidth) / 2,
-                (height - scale * drawable.intrinsicHeight) / 2
-            )
-            imageMatrix = matrix
-        }
+                // Center the scaling
+                matrix.setScale(scaleFactor, scaleFactor, 
+                    width / 2f,  // Pivot X at center
+                    height / 2f  // Pivot Y at center
+                )
+                imageMatrix = matrix
+                invalidate()
+                return true
+            }
+        })
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         scaleDetector.onTouchEvent(event)
 
-        when (event.actionMasked) {
+        when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                prevX = event.x
-                prevY = event.y
-                activePointerId = event.getPointerId(0)
+                lastTouchX = event.x
+                lastTouchY = event.y
             }
             MotionEvent.ACTION_MOVE -> {
-                if (scale > minScale) {
-                    val pointerIndex = event.findPointerIndex(activePointerId)
-                    if (pointerIndex != -1) {
-                        val currX = event.getX(pointerIndex)
-                        val currY = event.getY(pointerIndex)
-                        if (!scaleDetector.isInProgress) {
-                            matrix.postTranslate(currX - prevX, currY - prevY)
-                            imageMatrix = matrix
-                            prevX = currX
-                            prevY = currY
-                        }
-                    }
-                }
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                activePointerId = INVALID_POINTER_ID
-            }
-            MotionEvent.ACTION_POINTER_UP -> {
-                val pointerIndex = event.actionIndex
-                val pointerId = event.getPointerId(pointerIndex)
-                if (pointerId == activePointerId) {
-                    val newPointerIndex = if (pointerIndex == 0) 1 else 0
-                    prevX = event.getX(newPointerIndex)
-                    prevY = event.getY(newPointerIndex)
-                    activePointerId = event.getPointerId(newPointerIndex)
+                if (!scaleDetector.isInProgress && scaleFactor > 1f) {
+                    val dx = event.x - lastTouchX
+                    val dy = event.y - lastTouchY
+                    matrix.postTranslate(dx, dy)
+                    imageMatrix = matrix
+                    lastTouchX = event.x
+                    lastTouchY = event.y
                 }
             }
         }
         return true
-    }
-
-    companion object {
-        private const val INVALID_POINTER_ID = -1
     }
 } 
