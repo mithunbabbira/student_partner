@@ -1,34 +1,155 @@
 package com.babbira.studentspartner.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.babbira.studentspartner.R
 import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
 import com.babbira.studentspartner.databinding.DialogAddItemBinding
 import com.babbira.studentspartner.utils.DialogUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.bumptech.glide.Glide
 
 class ViewProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityViewProfileBinding
     private val viewModel: ViewProfileViewModel by viewModels()
+    private val storage = FirebaseStorage.getInstance()
+    private val storageRef = storage.reference
+    private var selectedImageUri: Uri? = null
+    
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            binding.profileImageView.setImageURI(it)
+            uploadProfileImage(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityViewProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupImagePicker()
         setupDropdownListeners()
         setupTextChangeListeners()
         setupUpdateButton()
         observeViewModel()
+    }
+
+    private fun setupImagePicker() {
+        binding.editProfileImageButton.setOnClickListener {
+            showImagePickerDialog()
+        }
+    }
+
+    private fun showImagePickerDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Profile Picture")
+            .setItems(arrayOf("Choose from Gallery", "Remove Photo")) { _, which ->
+                when (which) {
+                    0 -> getContent.launch("image/*")
+                    1 -> removeProfileImage()
+                }
+            }
+            .show()
+    }
+
+    private fun uploadProfileImage(imageUri: Uri) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userCollege = binding.collegeAutoComplete.text.toString()
+        val userCombination = binding.combinationAutoComplete.text.toString()
+
+        if (userCollege.isEmpty() || userCombination.isEmpty()) {
+            Toast.makeText(this, "Please select college and combination first", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val imageRef = storageRef.child("profile_pics/$userCollege/$userCombination/$userId.jpg")
+        
+        binding.progressBar.visibility = View.VISIBLE
+
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    updateProfileImageUrl(downloadUri.toString())
+                }
+            }
+            .addOnFailureListener {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun updateProfileImageUrl(imageUrl: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+
+        userRef.update("profileImageUrl", imageUrl)
+            .addOnSuccessListener {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Profile picture updated", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Failed to update profile: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun removeProfileImage() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userCollege = binding.collegeAutoComplete.text.toString()
+        val userCombination = binding.combinationAutoComplete.text.toString()
+
+        if (userCollege.isEmpty() || userCombination.isEmpty()) {
+            Toast.makeText(this, "College or combination not found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val imageRef = storageRef.child("profile_pics/$userCollege/$userCombination/$userId.jpg")
+        
+        binding.progressBar.visibility = View.VISIBLE
+
+        imageRef.delete().addOnCompleteListener { storageTask ->
+            val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+            userRef.update("profileImageUrl", null)
+                .addOnCompleteListener { firestoreTask ->
+                    binding.progressBar.visibility = View.GONE
+                    if (storageTask.isSuccessful && firestoreTask.isSuccessful) {
+                        binding.profileImageView.setImageResource(R.drawable.ic_profile_placeholder)
+                        Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Failed to remove profile picture", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+
+    private fun loadProfileImage(imageUrl: String?) {
+        if (imageUrl != null) {
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_profile_placeholder)
+                .error(R.drawable.ic_profile_placeholder)
+                .circleCrop()
+                .into(binding.profileImageView)
+        } else {
+            binding.profileImageView.setImageResource(R.drawable.ic_profile_placeholder)
+        }
     }
 
     private fun setupDropdownListeners() {
@@ -417,6 +538,8 @@ class ViewProfileActivity : AppCompatActivity() {
                 viewModel.setSelectedCombination(profile.combination)
                 viewModel.fetchSections(profile.college, profile.combination, profile.semester ?: "")
             }
+
+            loadProfileImage(profile.profileImageUrl)
         }
     }
 }

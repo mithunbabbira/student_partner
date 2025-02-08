@@ -6,5 +6,6 @@ data class UserProfile(
     val college: String? = null,
     val combination: String? = null,
     val semester: String? = null,
-    val section: String? = null
+    val section: String? = null,
+    val profileImageUrl: String? = null
 )
