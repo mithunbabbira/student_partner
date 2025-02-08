@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlin.random.Random
 
 // Add this interface at the top of the file, outside the class
 interface AddNewMaterialListener {
@@ -218,9 +219,13 @@ class AddNewMaterialFragment : Fragment() {
             .collection("materials")
             .document()  // This generates a new document ID
 
+
+        val randomSuffix = String.format("_%03d", Random.nextInt(1000))
+
         val material = SubjectMaterial(
             id = docRef.id,  // Use the generated ID directly
             title = binding.titleEditText.text.toString().trim(),
+            filename = binding.titleEditText.text.toString().trim()+randomSuffix,
             description = binding.descriptionEditText.text.toString().trim(),
             pdfUrl = pdfUrl,
             addedBy = UserDetails.getUserName(requireContext()),

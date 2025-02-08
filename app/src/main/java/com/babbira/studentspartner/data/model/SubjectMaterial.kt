@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class SubjectMaterial(
     val id: String = "",
     val title: String = "",
+    val filename: String = "",
     val pdfUrl: String = "",
     val addedBy: String = "",
     val userId: String = "",

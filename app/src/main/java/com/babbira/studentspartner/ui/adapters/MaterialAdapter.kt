@@ -61,7 +61,7 @@ class MaterialAdapter(
         }
 
         private fun downloadAndViewPdf(material: SubjectMaterial) {
-            val fileName = "${material.title}.pdf"
+            val fileName = "${material.filename}.pdf"
             val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
 
             if (file.exists() && file.length() > 0) {
