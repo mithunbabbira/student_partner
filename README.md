@@ -135,7 +135,8 @@ app/
 │   │   │   │   ├── model/
 │   │   │   │   │   ├── User.kt
 │   │   │   │   │   ├── Subject.kt
-│   │   │   │   │   └── Material.kt
+│   │   │   │   │   ├── Material.kt
+│   │   │   │   │   └── MaterialDetails.kt
 │   │   │   │   └── repository/
 │   │   │   │       ├── UserRepository.kt
 │   │   │   │       ├── SubjectRepository.kt
@@ -147,18 +148,47 @@ app/
 │   │   │   │   ├── main/
 │   │   │   │   │   ├── MainActivity.kt
 │   │   │   │   │   └── MainViewModel.kt
-│   │   │   │   └── profile/
-│   │   │   │       ├── ProfileActivity.kt
-│   │   │   │       └── ProfileViewModel.kt
-│   │   │   └── utils/
-│   │   │       ├── Constants.kt
-│   │   │       └── Extensions.kt
+│   │   │   │   ├── material/
+│   │   │   │   │   ├── ViewMaterialActivity.kt
+│   │   │   │   │   ├── ViewMaterialViewModel.kt
+│   │   │   │   │   ├── MaterialAdapter.kt
+│   │   │   │   │   └── MaterialViewHolder.kt
+│   │   │   │   ├── profile/
+│   │   │   │   │   ├── ProfileActivity.kt
+│   │   │   │   │   └── ProfileViewModel.kt
+│   │   │   │   └── common/
+│   │   │   │       ├── BaseActivity.kt
+│   │   │   │       └── BaseViewModel.kt
+│   │   │   ├── utils/
+│   │   │   │   ├── Constants.kt
+│   │   │   │   ├── Extensions.kt
+│   │   │   │   ├── FileUtils.kt
+│   │   │   │   └── PDFUtils.kt
+│   │   │   └── service/
+│   │   │       └── DownloadService.kt
 │   │   └── res/
 │   │       ├── layout/
+│   │       │   ├── activity_main.xml
+│   │       │   ├── activity_view_material.xml
+│   │       │   ├── item_material.xml
+│   │       │   └── ... other layouts ...
 │   │       ├── drawable/
+│   │       │   ├── ic_pdf.xml
+│   │       │   ├── ic_download.xml
+│   │       │   └── ... other drawables ...
 │   │       ├── values/
+│   │       │   ├── strings.xml
+│   │       │   ├── colors.xml
+│   │       │   └── themes.xml
 │   │       └── menu/
+│   │           ├── material_menu.xml
+│   │           └── ... other menus ...
 │   └── test/
+│       ├── java/
+│       │   └── com/babbira/studentspartner/
+│       │       ├── ViewMaterialViewModelTest.kt
+│       │       └── MaterialRepositoryTest.kt
+│       └── resources/
 └── build.gradle.kts
 ```
 
@@ -400,4 +430,14 @@ Common issues and solutions:
 - Usage terms
 - User responsibilities
 - Service limitations
-- Legal considerations 
+- Legal considerations
+
+### Material Viewing Features
+- PDF viewing with zoom and scroll support
+- Download progress tracking
+- Offline access to downloaded materials
+- Share functionality
+- Material details display (title, description, upload date)
+- Material actions (download, share, report)
+- Loading state handling
+- Error handling with retry options 
