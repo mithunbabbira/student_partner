@@ -24,6 +24,7 @@ Students Partner provides:
 ### Authentication
 - Firebase Authentication for secure user management
 - Email and password-based authentication
+- Google Sign-In integration
 - User session management
 
 ### Data Structure (Firestore)
@@ -36,77 +37,91 @@ collegeList (collection)
                       └── Semester Number (document)
                            └── sections (collection)
                                 └── Section Name (document)
+                                     └── materials (collection)
+                                          └── Material ID (document)
+                                               ├── title
+                                               ├── description
+                                               ├── fileUrl
+                                               ├── uploadedBy
+                                               ├── uploadedDate
+                                               └── type (PDF/DOC/etc)
 
 users (collection)
   └── User ID (document)
        ├── name
        ├── phone
+       ├── email
+       ├── profilePicUrl
        ├── college
        ├── subject
        ├── semester
-       └── section
+       ├── section
+       └── lastUpdated
 ```
 
 ### Key Features
 
-#### User Authentication
-- Login screen with email/password
+#### User Authentication & Profile
+- Login with email/password
+- Google Sign-In option
 - Registration for new users
 - Password reset functionality
-- Session management
+- Profile picture upload
+- Profile information management
+- College and course selection
 
-#### Profile Management
-- User profile creation and updates
-- College selection
-- Subject selection
-- Semester selection (1st to 10th)
-- Section selection (A to Z)
-- Data validation and verification
+#### Material Management
+- Upload study materials (PDFs, DOCs)
+- Organize by subject and semester
+- Search functionality
+- Download for offline access
+- Share materials with others
+- Material preview
 
-#### College Management
-- Add new colleges
-- List existing colleges
-- College-wise subject organization
-- Real-time updates using Firestore
-
-#### Subject Management
-- Add new subjects to colleges
-- List subjects by college
-- Subject-wise semester organization
-- Real-time data synchronization
-
-#### UI Components
+#### Navigation & UI
 - Material Design implementation
-- Custom dialog utilities
-- Dropdown menus for selections
-- Progress indicators
-- Form validation
-- Responsive layout with ScrollView
+- Drawer navigation
+- Subject-wise categorization
+- Semester-wise organization
+- Easy-to-use interface
+- Dark mode support
 
 ### Technical Stack
 - Language: Kotlin
 - Platform: Android
-- Minimum SDK: [Your min SDK version]
-- Target SDK: [Your target SDK version]
+- Minimum SDK: 24 (Android 7.0)
+- Target SDK: 34 (Android 14)
 - Architecture: MVVM (Model-View-ViewModel)
 
 ### Dependencies
 ```gradle
 dependencies {
     // Firebase
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    
+    // Google Sign In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     
     // Material Design
-    implementation 'com.google.android.material:material'
+    implementation("com.google.android.material:material:1.11.0")
     
-    // ViewModel & LiveData
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx'
+    // AndroidX
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    
+    // Image Loading
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }
 ```
 
@@ -118,66 +133,133 @@ app/
 │   │   ├── java/com/babbira/studentspartner/
 │   │   │   ├── data/
 │   │   │   │   ├── model/
-│   │   │   │   │   └── UserProfile.kt
+│   │   │   │   │   ├── User.kt
+│   │   │   │   │   ├── Subject.kt
+│   │   │   │   │   └── Material.kt
 │   │   │   │   └── repository/
-│   │   │   │       └── CollegeRepository.kt
+│   │   │   │       ├── UserRepository.kt
+│   │   │   │       ├── SubjectRepository.kt
+│   │   │   │       └── MaterialRepository.kt
 │   │   │   ├── ui/
-│   │   │   │   ├── ViewProfileActivity.kt
-│   │   │   │   └── ViewProfileViewModel.kt
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── LoginActivity.kt
+│   │   │   │   │   └── RegisterActivity.kt
+│   │   │   │   ├── main/
+│   │   │   │   │   ├── MainActivity.kt
+│   │   │   │   │   └── MainViewModel.kt
+│   │   │   │   └── profile/
+│   │   │   │       ├── ProfileActivity.kt
+│   │   │   │       └── ProfileViewModel.kt
 │   │   │   └── utils/
-│   │   │       └── DialogUtils.kt
+│   │   │       ├── Constants.kt
+│   │   │       └── Extensions.kt
 │   │   └── res/
-│   │       └── layout/
-│   │           └── activity_view_profile.xml
+│   │       ├── layout/
+│   │       ├── drawable/
+│   │       ├── values/
+│   │       └── menu/
 │   └── test/
-└── build.gradle
+└── build.gradle.kts
 ```
 
-## Future Enhancements
-1. PDF Upload & Management
-   - Upload functionality for study materials
-   - PDF viewer integration
-   - Document categorization
+## Features in Detail
 
-2. Search Functionality
-   - Search across all study materials
-   - Filter by subject/semester/section
+### 1. Authentication Flow
+- Splash screen checks authentication state
+- Login/Register options
+- Google Sign-In integration
+- Password reset via email
+- Session management
+- Auto-login for returning users
+
+### 2. Profile Management
+- Profile creation wizard
+- College selection with search
+- Subject selection with add option
+- Semester selection (1-10)
+- Section selection (A-Z)
+- Profile picture upload
+- Information update
+
+### 3. Material Management
+- Upload study materials
+- Organize by subject/semester
+- Preview before upload
+- Download for offline use
+- Share via link
+- Delete own uploads
+- Report inappropriate content
+
+### 4. User Interface
+- Clean Material Design
+- Dark mode support
+- Responsive layouts
+- Loading indicators
+- Error handling
+- Pull-to-refresh
+- Infinite scrolling
+
+### 5. Performance Features
+- Material caching
+- Image compression
+- Lazy loading
+- Offline support
+- Background sync
+
+## Security Measures
+- Firebase Authentication
+- Firestore security rules
+- File access control
+- Data validation
+- Session management
+- Secure file storage
+
+## Future Enhancements
+1. Chat Feature
+   - Direct messaging
+   - Group discussions
+   - File sharing in chats
+
+2. Advanced Search
+   - Full-text search
+   - Filter by type/date
+   - Tags and categories
 
 3. Notifications
-   - New material notifications
-   - Updates from college/department
+   - New material alerts
+   - Updates from college
+   - Chat notifications
 
-4. Offline Access
-   - Cache frequently accessed materials
-   - Offline-first architecture
+4. Social Features
+   - Follow other users
+   - Share materials
+   - Discussion forums
 
-5. User Roles
-   - Student role
-   - Faculty role
-   - Admin role for content management
+5. Analytics
+   - Usage statistics
+   - Popular materials
+   - User engagement
 
-## Navigation
-
-The app uses Bottom Navigation with two main sections:
-1. Chapter Wise - Browse materials organized by chapters
-2. Add New - Upload new study materials
+## Installation
+1. Clone the repository
+2. Set up Firebase project
+3. Add google-services.json
+4. Build and run
 
 ## Contributing
-
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
 ## License
-
-[Add your license here]
+[Add your license details]
 
 ## Contact
-
-Your Name - [your.email@example.com]
-Project Link: [https://github.com/yourusername/studentspartner]
+Developer: Mithun
+Email: mithunbabbira@gmail.com
+GitHub: https://github.com/mithunbabbira
 
 ### Core Functionality Details
 

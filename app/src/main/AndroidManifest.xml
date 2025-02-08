@@ -43,7 +43,8 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.StudentsPartner" />
 
         <activity
             android:name=".ui.ViewProfileActivity"
