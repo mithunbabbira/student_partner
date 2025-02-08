@@ -20,8 +20,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -30,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var authViewModel: AuthViewModel
     private lateinit var progressBar: View
     private lateinit var googleSignInButton: SignInButton
+    private lateinit var auth: FirebaseAuth
 
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -68,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        auth = FirebaseAuth.getInstance()
         progressBar = findViewById(R.id.progressBar)
         googleSignInButton = findViewById(R.id.google_sign_in_button)
 
@@ -95,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        val repository = AuthRepository(Firebase.auth)
+        val repository = AuthRepository(FirebaseAuth.getInstance())
         val factory = AuthViewModelFactory(repository)
         authViewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
     }

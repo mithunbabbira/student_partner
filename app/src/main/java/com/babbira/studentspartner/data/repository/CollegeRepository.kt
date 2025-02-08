@@ -1,18 +1,18 @@
 package com.babbira.studentspartner.data.repository
 
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
-import com.babbira.studentspartner.data.model.UserProfile
 
+import com.babbira.studentspartner.data.model.UserProfile
+import com.google.firebase.ktx.Firebase
 
 
 class CollegeRepository {
     private val db = Firebase.firestore
     private val TAG = "CollegeRepository"
-    private val auth = Firebase.auth
+    private val auth = FirebaseAuth.getInstance()
 
     suspend fun getColleges(): Result<List<String>> = try {
         val documents = db.collection("collegeList").get().await()

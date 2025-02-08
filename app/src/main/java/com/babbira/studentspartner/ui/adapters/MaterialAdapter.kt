@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +65,7 @@ class MaterialAdapter(
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         private fun downloadPdf(url: String, fileName: String, material: SubjectMaterial) {
             binding.btnView.isVisible = false
             binding.progressDownload.isVisible = true
@@ -99,7 +102,8 @@ class MaterialAdapter(
             // Register the BroadcastReceiver
             context.registerReceiver(
                 onComplete,
-                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                Context.RECEIVER_NOT_EXPORTED
             )
 
             // Add download status check

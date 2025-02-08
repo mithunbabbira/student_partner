@@ -3,7 +3,8 @@ package com.babbira.studentspartner.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.FirebaseAuth
+
 import com.google.firebase.ktx.Firebase
 
 class SplashActivity : AppCompatActivity() {
@@ -11,7 +12,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         // Check if user is signed in
-        val currentUser = Firebase.auth.currentUser
+        val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             // User is signed in, go to MainActivity
             startActivity(Intent(this, MainActivity::class.java))

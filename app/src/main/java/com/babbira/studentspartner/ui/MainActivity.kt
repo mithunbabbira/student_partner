@@ -1,6 +1,5 @@
 package com.babbira.studentspartner.ui
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.babbira.studentspartner.R
 import com.babbira.studentspartner.utils.UserDetails
-import com.google.firebase.auth.ktx.auth
+
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.DocumentSnapshot
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        auth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
         db = Firebase.firestore
 
         // Initialize views

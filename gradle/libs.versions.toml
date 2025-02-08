@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.2"
 circleimageview = "3.1.0"
+firebaseBom = "32.7.0"
 googleid = "1.1.1"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
@@ -8,12 +9,14 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+kotlinxCoroutinesAndroid = "1.7.3"
 kotlinxCoroutinesPlayServices = "1.7.3"
 lifecycleRuntimeKtx = "2.8.7"
 material = "1.12.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.1.0"
 materialVersion = "1.11.0"
+multidex = "2.0.1"
 playServicesAuth = "21.3.0"
 firebaseCrashlytics = "19.4.0"
 googleFirebaseCrashlytics = "3.0.3"
@@ -25,13 +28,27 @@ firebaseStorage = "21.0.1"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
+com-google-firebase-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-common = { module = "com.google.firebase:firebase-common" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
+google-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+google-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
+google-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+google-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
+google-firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }

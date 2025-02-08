@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.data.repository.CollegeRepository
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ class ViewProfileViewModel(
     private var selectedSection: String = ""
 
     private val db = Firebase.firestore
-    private val auth = Firebase.auth
+    private val auth = FirebaseAuth.getInstance()
 
     private val _isUpdating = MutableLiveData<Boolean>()
     val isUpdating: LiveData<Boolean> = _isUpdating

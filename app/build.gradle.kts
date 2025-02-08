@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     id("kotlin-parcelize")
 }
 
@@ -35,6 +36,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+        languageVersion = "1.9"
+        apiVersion = "1.9"
+        freeCompilerArgs += listOf(
+            "-Xjvm-default=all",
+            "-opt-in=kotlin.RequiresOptIn"
+        )
     }
     buildFeatures {
         dataBinding = true
@@ -43,21 +50,29 @@ android {
 }
 
 dependencies {
-    // Firebase
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
-    
+    // Use BoM (Bill of Materials) for Firebase
+    implementation(platform(libs.firebase.bom))
+
+    // Then declare Firebase dependencies without versions
+    implementation(libs.google.firebase.analytics.ktx)
+    implementation(libs.google.firebase.auth.ktx)
+    implementation(libs.com.google.firebase.firebase.firestore.ktx)
+    implementation(libs.google.firebase.storage.ktx)
+    implementation(libs.google.firebase.crashlytics.ktx)
+
+    // Explicitly enforce firebase-common version from BoM (Optional, try removing if still failing)
+    // implementation("com.google.firebase:firebase-common")
+
     // Google Sign In
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation(libs.play.services.auth)
     
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -73,10 +88,10 @@ dependencies {
     implementation(libs.googleid)
 
     // Material Design
-    implementation("com.google.android.material:material:1.11.0")
+    implementation(libs.material)
 
     // MultiDex
-    implementation("androidx.multidex:multidex:2.0.1")
+    implementation(libs.androidx.multidex)
 
     // Circle ImageView for round profile picture
     implementation(libs.circleimageview)
@@ -86,4 +101,5 @@ dependencies {
 
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+
 }
