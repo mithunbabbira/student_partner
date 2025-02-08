@@ -22,13 +22,19 @@ import java.io.File
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MaterialAdapter(
-    private val materials: List<SubjectMaterial>
+    private val materials: MutableList<SubjectMaterial>
 ) : RecyclerView.Adapter<MaterialAdapter.MaterialViewHolder>() {
 
     private var onDeleteClickListener: ((SubjectMaterial) -> Unit)? = null
 
     fun setOnDeleteClickListener(listener: (SubjectMaterial) -> Unit) {
         onDeleteClickListener = listener
+    }
+
+    fun updateMaterials(newMaterials: List<SubjectMaterial>) {
+        materials.clear()
+        materials.addAll(newMaterials)
+        notifyDataSetChanged()
     }
 
     inner class MaterialViewHolder(

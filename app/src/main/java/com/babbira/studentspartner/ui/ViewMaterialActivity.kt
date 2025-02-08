@@ -32,12 +32,15 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
         binding = ActivityViewMaterialBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Setup ViewPager first
+        setupViewPager()
+
+        // Then fetch materials
         subjectName = intent.getStringExtra("subject_name")
         if (subjectName != null) {
             fetchMaterials(subjectName!!)
         }
         
-        setupViewPager()
         setupAddNewButton()
     }
 
@@ -75,10 +78,7 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
 
     private fun fetchMaterials(subjectName: String) {
         showLoading(true)
-        
-        // Hide ViewPager while loading
         binding.viewPager.alpha = 0.5f
-        binding.viewPager.isEnabled = false
 
         val college = UserDetails.getUserCollege(this)
         val combination = UserDetails.getUserCombination(this)
@@ -100,18 +100,16 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
                     val material = document.toObject(SubjectMaterial::class.java)
                     materialsList.add(material)
                 }
-                showLoading(false)
-                updateFragments()
                 
-                // Show ViewPager after loading
+                updateFragments()
+                showLoading(false)
                 binding.viewPager.alpha = 1.0f
-                binding.viewPager.isEnabled = true
+                binding.viewPager.isUserInputEnabled = true  // Enable swipe after data is loaded
             }
             .addOnFailureListener { e ->
                 showLoading(false)
-                // Show ViewPager after error
                 binding.viewPager.alpha = 1.0f
-                binding.viewPager.isEnabled = true
+                binding.viewPager.isUserInputEnabled = true
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
@@ -129,16 +127,21 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
 
         val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
         
+        binding.viewPager.adapter = viewPagerAdapter
+        binding.viewPager.offscreenPageLimit = 2  // Keep both fragments in memory
+        
+        // Initialize fragments with empty lists first
         viewPagerAdapter.addFragment(
-            ViewAllFragment.newInstance(materialsList, subjectName),  // Pass both parameters
+            ViewAllFragment.newInstance(ArrayList(materialsList), subjectName),
             "View All"
         )
         viewPagerAdapter.addFragment(
-            ChapterWiseFragment.newInstance(materialsList),
+            ChapterWiseFragment.newInstance(ArrayList(materialsList)),
             "Chapter Wise"
         )
 
-        binding.viewPager.adapter = viewPagerAdapter
+        // Disable ViewPager swipe until data is loaded
+        binding.viewPager.isUserInputEnabled = false
         
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
@@ -147,12 +150,45 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
                 else -> ""
             }
         }.attach()
+
+        // Add page change callback to ensure fragments are updated
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val fragment = supportFragmentManager.findFragmentByTag("f$position")
+                when (fragment) {
+                    is ViewAllFragment -> fragment.updateMaterials(materialsList)
+                    is ChapterWiseFragment -> fragment.updateMaterials(materialsList)
+                }
+            }
+        })
     }
 
     private fun updateFragments() {
-        // Get current fragments and update their materials
-        val viewPagerAdapter = binding.viewPager.adapter as ViewPagerAdapter
-        viewPagerAdapter.updateMaterials(materialsList)
+        try {
+            val viewPagerAdapter = binding.viewPager.adapter as? ViewPagerAdapter
+            viewPagerAdapter?.updateMaterials(ArrayList(materialsList))
+
+            // Update both fragments explicitly
+            supportFragmentManager.fragments.forEach { fragment ->
+                when (fragment) {
+                    is ViewAllFragment -> fragment.updateMaterials(materialsList)
+                    is ChapterWiseFragment -> fragment.updateMaterials(materialsList)
+                }
+            }
+
+            // Ensure the current fragment is properly updated
+            binding.viewPager.post {
+                val currentFragment = supportFragmentManager.findFragmentByTag("f${binding.viewPager.currentItem}")
+                when (currentFragment) {
+                    is ViewAllFragment -> currentFragment.updateMaterials(materialsList)
+                    is ChapterWiseFragment -> currentFragment.updateMaterials(materialsList)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("ViewMaterialActivity", "Error updating fragments: ${e.message}")
+            Toast.makeText(this, "Error updating materials", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onMaterialUploaded() {
@@ -167,6 +203,11 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
         binding.viewPager.visibility = View.VISIBLE
         binding.tabLayout.visibility = View.VISIBLE
         binding.btnAddNew.visibility = View.VISIBLE
+
+        // Force update the current fragment
+        binding.viewPager.post {
+            updateFragments()
+        }
     }
 
     companion object {

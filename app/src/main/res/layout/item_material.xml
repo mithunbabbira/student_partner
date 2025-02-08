@@ -61,22 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnView"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp"
-                android:text="View"
-                android:textSize="12sp"
-                app:icon="@drawable/ic_pdf_view"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconSize="18dp" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
@@ -95,6 +80,23 @@
                 app:iconSize="18dp"
                 app:iconTint="@color/design_default_color_error"
                 tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnView"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:text="View"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_pdf_view"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconSize="18dp" />
 
         </LinearLayout>
 
