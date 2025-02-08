@@ -62,6 +62,10 @@
             android:name=".ui.UploadTimetableActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.ClassmateDetailsActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

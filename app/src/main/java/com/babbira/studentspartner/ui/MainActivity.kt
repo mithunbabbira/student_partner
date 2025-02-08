@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Setup navigation drawer
-        setupNavigationDrawer()
+        setupNavigation()
 
         // Update navigation header with user info
         updateNavigationHeader()
@@ -253,25 +253,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupNavigationDrawer() {
-        navigationView.setNavigationItemSelectedListener { menuItem ->
+    private fun setupNavigation() {
+        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ViewProfileActivity::class.java))
                 }
                 R.id.nav_classmates -> {
-                    // Start classmates activity
-                    // startActivity(Intent(this, ClassmatesActivity::class.java))
+                    startActivity(Intent(this, ClassmateDetailsActivity::class.java))
                 }
                 R.id.nav_about -> {
-                    // Show about dialog or start about activity
                     showAboutDialog()
                 }
                 R.id.nav_logout -> {
-                    showLogoutConfirmationDialog()
+                    showLogoutConfirmation()
                 }
             }
-            drawerLayout.closeDrawer(GravityCompat.START)
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
     }
@@ -285,17 +283,16 @@ class MainActivity : AppCompatActivity() {
     private fun showAboutDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("About Us")
-            .setMessage("Students Partner is an app designed to help students share and access study materials easily.")
+            .setMessage("Students Partner\nVersion 1.0\n\nDeveloped by Babbira")
             .setPositiveButton("OK", null)
             .show()
     }
 
-    private fun showLogoutConfirmationDialog() {
+    private fun showLogoutConfirmation() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
-                // Perform logout
                 FirebaseAuth.getInstance().signOut()
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
