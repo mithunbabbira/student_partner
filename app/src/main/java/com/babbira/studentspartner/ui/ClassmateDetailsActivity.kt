@@ -2,6 +2,8 @@ package com.babbira.studentspartner.ui
 
 
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -63,7 +65,8 @@ class ClassmateDetailsActivity : AppCompatActivity() {
                                             college = doc.getString("college") ?: "",
                                             combination = doc.getString("combination") ?: "",
                                             section = doc.getString("section") ?: "",
-                                            semester = doc.getString("semester") ?: ""
+                                            semester = doc.getString("semester") ?: "",
+                                            profileImageUrl = doc.getString("profileImageUrl")
                                         )
                                     } else null
                                 }
@@ -85,7 +88,33 @@ class ClassmateDetailsActivity : AppCompatActivity() {
     private fun setupRecyclerView(classmates: List<ClassmateModel>) {
         binding.classmatesRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@ClassmateDetailsActivity)
-            adapter = ClassmatesAdapter(classmates)
+            adapter = ClassmatesAdapter(
+                classmates = classmates,
+                onWhatsAppClick = { phone -> openWhatsApp(phone) },
+                onCallClick = { phone -> dialPhoneNumber(phone) }
+            )
+        }
+    }
+
+    private fun openWhatsApp(phone: String) {
+        try {
+            val phoneNumber = if (phone.startsWith("+")) phone else "+91$phone"
+            val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun dialPhoneNumber(phone: String) {
+        try {
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phone")
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Unable to make call", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -102,5 +131,6 @@ data class ClassmateModel(
     val college: String,
     val combination: String,
     val section: String,
-    val semester: String
+    val semester: String,
+    val profileImageUrl: String? = null
 ) 

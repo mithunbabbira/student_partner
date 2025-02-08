@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CircularImageView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.CircularImageView</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.CircularImageView" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+</resources> 
