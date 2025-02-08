@@ -132,7 +132,7 @@ class CollegeRepository {
             
             db.collection("users")
                 .document(currentUser.uid)
-                .set(userProfile)
+                .update(userProfile)
                 .await()
 
             Result.success(Unit)
