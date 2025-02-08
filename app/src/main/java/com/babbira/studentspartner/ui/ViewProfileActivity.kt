@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
+import com.babbira.studentspartner.databinding.DialogAddItemBinding
 import com.babbira.studentspartner.utils.DialogUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
@@ -311,22 +312,51 @@ class ViewProfileActivity : AppCompatActivity() {
     }
 
     private fun showAddCollegeDialog(collegeName: String) {
+        val dialogBinding = DialogAddItemBinding.inflate(layoutInflater)
+        dialogBinding.titleText.text = "Add New College"
+        dialogBinding.itemInput.setText(collegeName)
+
         MaterialAlertDialogBuilder(this)
-            .setTitle("Add New College")
-            .setMessage("Do you want to add '$collegeName' to the list?")
-            .setPositiveButton("Add") { _, _ ->
-                viewModel.addNewCollege(collegeName)
+            .setView(dialogBinding.root)
+            .setPositiveButton("Add") { dialog, _ ->
+                val finalCollegeName = dialogBinding.itemInput.text.toString().trim()
+                if (finalCollegeName.isNotEmpty()) {
+                    viewModel.addNewCollege(finalCollegeName)
+                    // Set the newly added college as selected
+                    binding.collegeAutoComplete.setText(finalCollegeName, false)
+                    binding.collegeInputLayout.setEndIconVisible(false)
+                    clearDependentFields()
+                    viewModel.setSelectedCollege(finalCollegeName)
+                    viewModel.fetchCombination(finalCollegeName)
+                }
+                dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun showAddCombinationDialog(combinationName: String) {
+        val dialogBinding = DialogAddItemBinding.inflate(layoutInflater)
+        dialogBinding.titleText.text = "Add New Combination"
+        dialogBinding.itemInput.setText(combinationName)
+
         MaterialAlertDialogBuilder(this)
-            .setTitle("Add New Combination")
-            .setMessage("Do you want to add '$combinationName' to the list?")
-            .setPositiveButton("Add") { _, _ ->
-                viewModel.addNewCombination(combinationName)
+            .setView(dialogBinding.root)
+            .setPositiveButton("Add") { dialog, _ ->
+                val finalCombinationName = dialogBinding.itemInput.text.toString().trim()
+                if (finalCombinationName.isNotEmpty()) {
+                    viewModel.addNewCombination(finalCombinationName)
+                    // Set the newly added combination as selected
+                    binding.combinationAutoComplete.setText(finalCombinationName, false)
+                    binding.combinationInputLayout.setEndIconVisible(false)
+                    clearSemesterAndSection()
+                    viewModel.setSelectedCombination(finalCombinationName)
+                    viewModel.fetchSemesters(
+                        binding.collegeAutoComplete.text.toString(),
+                        finalCombinationName
+                    )
+                }
+                dialog.dismiss()
             }
             .setNegativeButton("Cancel", null)
             .show()

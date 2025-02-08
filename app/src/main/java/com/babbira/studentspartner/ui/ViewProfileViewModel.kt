@@ -310,7 +310,7 @@ class ViewProfileViewModel(
             )
 
             repository.updateUserProfile(userProfile)
-                .onSuccess { 
+                .onSuccess {
                     _error.value = "Profile updated successfully"
                     _isUpdating.value = false
                 }
