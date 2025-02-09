@@ -44,11 +44,60 @@ class ViewProfileActivity : AppCompatActivity() {
         binding = ActivityViewProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize adapters first
+        setupCollegeAdapter()
+        setupCombinationAdapter()
+        
         setupImagePicker()
         setupDropdownListeners()
         setupTextChangeListeners()
         setupUpdateButton()
         observeViewModel()
+    }
+
+    private fun setupCollegeAdapter() {
+        // Create and set adapter immediately with empty list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf<String>()
+        )
+        binding.collegeAutoComplete.setAdapter(adapter)
+        binding.collegeAutoComplete.threshold = 1
+
+        // Observe colleges and update adapter data
+        viewModel.colleges.observe(this) { colleges ->
+            adapter.clear()
+            adapter.addAll(colleges)
+            adapter.notifyDataSetChanged()
+        }
+
+        // Fetch colleges after setting up observation
+        viewModel.fetchColleges()
+
+        binding.collegeAutoComplete.setOnItemClickListener { _, _, _, _ ->
+            binding.combinationAutoComplete.text?.clear()
+            val selectedCollege = binding.collegeAutoComplete.text.toString()
+            viewModel.fetchCombination(selectedCollege)
+        }
+    }
+
+    private fun setupCombinationAdapter() {
+        // Create and set adapter immediately with empty list
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf<String>()
+        )
+        binding.combinationAutoComplete.setAdapter(adapter)
+        binding.combinationAutoComplete.threshold = 1
+
+        // Observe combinations and update adapter data
+        viewModel.combination.observe(this) { combinations ->
+            adapter.clear()
+            adapter.addAll(combinations)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun setupImagePicker() {
@@ -361,8 +410,8 @@ class ViewProfileActivity : AppCompatActivity() {
             setupSearchableDropdown(binding.collegeAutoComplete, colleges)
         }
 
-        viewModel.combination.observe(this) { combination ->
-            setupSearchableDropdown(binding.combinationAutoComplete, combination)
+        viewModel.combination.observe(this) { combinations ->
+            setupSearchableDropdown(binding.combinationAutoComplete, combinations)
         }
 
         viewModel.semesters.observe(this) { semesters ->
