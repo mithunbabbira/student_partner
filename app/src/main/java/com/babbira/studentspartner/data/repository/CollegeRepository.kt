@@ -130,10 +130,25 @@ class CollegeRepository {
 
             Log.d(TAG, "Updating profile for user: ${currentUser.uid}")
             
-            db.collection("users")
+            // First check if document exists
+            val userDoc = db.collection("users")
                 .document(currentUser.uid)
-                .update(userProfile)
+                .get()
                 .await()
+
+            if (userDoc.exists()) {
+                // If document exists, use update to preserve existing fields
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .update(userProfile)
+                    .await()
+            } else {
+                // If document doesn't exist, use set to create it
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .set(userProfile)
+                    .await()
+            }
 
             Result.success(Unit)
         } catch (e: Exception) {
