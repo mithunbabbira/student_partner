@@ -1,13 +1,34 @@
 package com.babbira.studentspartner.utils
 
-import android.app.Activity
+
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+
+import android.app.AlertDialog
 import com.babbira.studentspartner.R
 
 class LoaderManager private constructor() {
-    private var loaderView: View? = null
+    private var progressDialog: AlertDialog? = null
+
+    fun showLoader(context: Context) {
+        if (progressDialog?.isShowing == true) return
+
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.layout_loader, null)
+        progressDialog = AlertDialog.Builder(context, R.style.TransparentDialog)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+        
+        progressDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        progressDialog?.show()
+    }
+
+    fun hideLoader() {
+        progressDialog?.dismiss()
+        progressDialog = null
+    }
 
     companion object {
         @Volatile
@@ -18,21 +39,5 @@ class LoaderManager private constructor() {
                 instance ?: LoaderManager().also { instance = it }
             }
         }
-    }
-
-    fun showLoader(activity: Activity) {
-        if (loaderView == null) {
-            loaderView = LayoutInflater.from(activity).inflate(R.layout.layout_loader, null)
-            val rootView = activity.findViewById<ViewGroup>(android.R.id.content)
-            rootView.addView(loaderView, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            ))
-        }
-        loaderView?.visibility = View.VISIBLE
-    }
-
-    fun hideLoader() {
-        loaderView?.visibility = View.GONE
     }
 } 

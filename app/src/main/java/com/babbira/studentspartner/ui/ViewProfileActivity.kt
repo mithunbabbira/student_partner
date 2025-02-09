@@ -18,6 +18,7 @@ import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
 import com.babbira.studentspartner.databinding.DialogAddItemBinding
 import com.babbira.studentspartner.utils.DialogUtils
 import com.babbira.studentspartner.utils.ImageUtils
+import com.babbira.studentspartner.utils.LoaderManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -31,11 +32,13 @@ class ViewProfileActivity : AppCompatActivity() {
     private val storage = FirebaseStorage.getInstance()
     private val storageRef = storage.reference
     private var selectedImageUri: Uri? = null
+    private val loaderManager = LoaderManager.getInstance()
     
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             selectedImageUri = it
             binding.profileImageView.setImageURI(it)
+            loaderManager.showLoader(this)
             uploadProfileImage(it)
         }
     }
@@ -140,21 +143,20 @@ class ViewProfileActivity : AppCompatActivity() {
         val userCombination = binding.combinationAutoComplete.text.toString()
 
         if (userCollege.isEmpty() || userCombination.isEmpty()) {
+            loaderManager.hideLoader()
             Toast.makeText(this, "Please select college and combination first", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Compress and resize image using utility
         val compressedImage = ImageUtils.compressImage(imageUri, contentResolver)
         if (compressedImage == null) {
+            loaderManager.hideLoader()
             Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show()
             return
         }
 
         val imageRef = storageRef.child("profile_pics/$userCollege/$userCombination/$userId.jpg")
-        binding.progressBar.visibility = View.VISIBLE
 
-        // Upload compressed image
         imageRef.putBytes(compressedImage)
             .addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -162,7 +164,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
-                binding.progressBar.visibility = View.GONE
+                loaderManager.hideLoader()
                 Toast.makeText(this, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -173,11 +175,11 @@ class ViewProfileActivity : AppCompatActivity() {
 
         userRef.update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
-                binding.progressBar.visibility = View.GONE
+                loaderManager.hideLoader()
                 Toast.makeText(this, "Profile picture updated", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                binding.progressBar.visibility = View.GONE
+                loaderManager.hideLoader()
                 Toast.makeText(this, "Failed to update profile: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -463,12 +465,13 @@ class ViewProfileActivity : AppCompatActivity() {
 
         viewModel.isUpdating.observe(this) { isUpdating ->
             binding.updateProfileButton.isEnabled = !isUpdating
-            binding.progressBar.isVisible = isUpdating
-            binding.updateProfileButton.text = if (isUpdating) "" else "Update Profile"
-            
-            if (!isUpdating) {
+            if (isUpdating) {
+                loaderManager.showLoader(this)
+            } else {
+                loaderManager.hideLoader()
                 finish()
             }
+            binding.updateProfileButton.text = if (isUpdating) "" else "Update Profile"
         }
 
         viewModel.error.observe(this) { error ->
