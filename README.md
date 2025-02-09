@@ -1,443 +1,165 @@
 # Students Partner
 
 ## Overview
-Students Partner is an Android application designed to help students access and organize their academic materials efficiently. The app addresses the common problem of unstructured distribution of study materials through WhatsApp and other platforms by providing a centralized, organized platform for accessing academic resources.
+Students Partner is an Android application designed to help students access and organize their academic materials efficiently. The app provides a centralized platform for managing and accessing academic resources, eliminating the chaos of scattered study materials across various platforms.
 
-## Problem Statement
-Currently, students face several challenges:
-- Study materials are scattered across WhatsApp groups
-- PDFs and notes are not properly organized
-- Difficulty in finding specific subject materials
-- No structured way to access semester-wise content
-- Lack of proper organization by college, subject, and section
+## Key Features & Screen Details
 
-## Solution
-Students Partner provides:
-- Organized hierarchy of academic content
-- Easy navigation through college → subject → semester → section structure
-- Centralized platform for accessing study materials
-- User profile management for personalized experience
-- Clean and intuitive user interface
+### 1. Authentication Screens
+#### Login Screen
+- **Email/Password login**: Allows users to log in using their email and password.
+- **Google Sign-In integration**: Provides an option to log in with Google credentials.
+- **"Forgot Password" functionality**: Enables users to reset their password via email.
+- **Navigation to registration**: Directs users to the registration screen if they don't have an account.
+- **Input validation and error handling**: Ensures all fields are correctly filled and provides feedback.
+- **Remember me functionality**: Option to remember user credentials for easier login.
 
-## Technical Architecture
+#### Registration Screen
+- **Email/Password registration**: Allows new users to create an account.
+- **Input validation for all fields**: Ensures data integrity and user feedback.
+- **Password strength requirements**: Enforces strong password policies.
+- **Terms & Conditions acceptance**: Requires users to accept terms before registration.
+- **Error handling with clear messages**: Provides user-friendly error messages.
 
-### Authentication
-- Firebase Authentication for secure user management
-- Email and password-based authentication
-- Google Sign-In integration
-- User session management
+#### Password Reset Screen
+- **Email input for password reset**: Users can request a password reset link.
+- **Reset link sending functionality**: Sends a reset link to the user's email.
+- **Success/Error notifications**: Informs users of the reset process status.
+- **Back to login navigation**: Easy navigation back to the login screen.
 
-### Data Structure (Firestore)
+### 2. Main Screen (Dashboard)
+#### Subject List
+- **RecyclerView displaying all subjects**: Lists all subjects in a clean, card-based UI.
+- **Add new subject functionality**: Allows users to add new subjects.
+- **Subject-wise navigation**: Navigate to materials related to each subject.
+- **Pull-to-refresh functionality**: Refreshes the subject list.
+
+#### Navigation Drawer
+- **User profile section with image**: Displays user information and profile picture.
+- **View Profile option**: Navigate to the profile management screen.
+- **View Classmates option**: Access the classmates' details screen.
+- **About section**: Provides information about the app.
+- **Logout option**: Allows users to log out of the app.
+- **Clean Material Design implementation**: Ensures a modern and intuitive UI.
+
+#### Timetable Access
+- **Class timetable viewing**: View class schedules.
+- **Exam timetable viewing**: Access exam schedules.
+- **PDF preview functionality**: Preview timetables in PDF format.
+- **Download options**: Download timetables for offline access.
+
+### 3. Profile Management
+#### View Profile Screen
+- **Display user details**: Shows user information such as name, email, etc.
+- **Profile picture with update option**: Users can update their profile picture.
+- **Editable fields**: Users can edit:
+  - Full Name
+  - Phone Number
+  - College
+  - Combination
+  - Semester
+  - Section
+- **Save changes functionality**: Save updated profile information.
+- **Input validation**: Ensures all fields are correctly filled.
+- **Real-time updates**: Reflects changes immediately.
+
+### 4. Study Material Management
+#### View Materials Screen
+- **TabLayout with**:
+  - All Materials tab
+  - Chapter-wise tab
+- **Material cards showing**:
+  - Title
+  - Description
+  - Upload date
+  - Uploader name
+- **FAB for adding new materials**: Quick access to add new materials.
+- **Search functionality**: Search through materials.
+- **Sort options**: Sort materials by different criteria.
+
+#### Add New Material Screen
+- **Title input**: Enter the title of the material.
+- **Description input**: Provide a description.
+- **Chapter selection**: Choose the relevant chapter.
+- **PDF file selection**: Select a PDF file to upload.
+- **Upload progress tracking**: Visual feedback on upload progress.
+- **Success/Error handling**: Notifies users of upload status.
+
+### 5. Classmate Details Screen
+- **List of classmates**: Displays classmates in a card-based layout.
+- **Profile picture display**: Shows profile pictures.
+- **Basic information display**: Displays basic details of classmates.
+- **Pull-to-refresh**: Refreshes the list of classmates.
+
+### 6. Timetable Management
+#### View Timetable Screen
+- **PDF preview**: Preview timetables in PDF format.
+- **Download option**: Download timetables for offline access.
+- **Share functionality**: Share timetables with others.
+- **Uploader details**: Shows who uploaded the timetable.
+- **Last updated information**: Displays the last update time.
+
+#### Upload Timetable Screen
+- **PDF file selection**: Select a PDF file to upload.
+- **Upload progress tracking**: Visual feedback on upload progress.
+- **Success/Error handling**: Notifies users of upload status.
+- **Type selection (Class/Exam)**: Choose the type of timetable.
+
+## Technical Implementation
+
+### Data Structure
 ```
-collegeList (collection)
-  └── College Name (document)
-       └── subjects (collection)
-            └── Subject Name (document)
-                 └── semesters (collection)
-                      └── Semester Number (document)
-                           └── sections (collection)
-                                └── Section Name (document)
-                                     └── materials (collection)
-                                          └── Material ID (document)
-                                               ├── title
-                                               ├── description
-                                               ├── fileUrl
-                                               ├── uploadedBy
-                                               ├── uploadedDate
-                                               └── type (PDF/DOC/etc)
-
-users (collection)
-  └── User ID (document)
-       ├── name
-       ├── phone
-       ├── email
-       ├── profilePicUrl
-       ├── college
-       ├── subject
-       ├── semester
-       ├── section
-       └── lastUpdated
-```
-
-### Key Features
-
-#### User Authentication & Profile
-- Login with email/password
-- Google Sign-In option
-- Registration for new users
-- Password reset functionality
-- Profile picture upload
-- Profile information management
-- College and course selection
-
-#### Material Management
-- Upload study materials (PDFs, DOCs)
-- Organize by subject and semester
-- Search functionality
-- Download for offline access
-- Share materials with others
-- Material preview
-
-#### Navigation & UI
-- Material Design implementation
-- Drawer navigation
-- Subject-wise categorization
-- Semester-wise organization
-- Easy-to-use interface
-- Dark mode support
-
-### Technical Stack
-- Language: Kotlin
-- Platform: Android
-- Minimum SDK: 24 (Android 7.0)
-- Target SDK: 34 (Android 14)
-- Architecture: MVVM (Model-View-ViewModel)
-
-### Dependencies
-```gradle
-dependencies {
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    
-    // Google Sign In
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    
-    // Material Design
-    implementation("com.google.android.material:material:1.11.0")
-    
-    // AndroidX
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-    
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    
-    // Image Loading
-    implementation("de.hdodenhof:circleimageview:3.1.0")
-}
-```
-
-### Project Structure
-```
-app/
-├── src/
-│   ├── main/
-│   │   ├── java/com/babbira/studentspartner/
-│   │   │   ├── data/
-│   │   │   │   ├── model/
-│   │   │   │   │   ├── User.kt
-│   │   │   │   │   ├── Subject.kt
-│   │   │   │   │   ├── Material.kt
-│   │   │   │   │   └── MaterialDetails.kt
-│   │   │   │   └── repository/
-│   │   │   │       ├── UserRepository.kt
-│   │   │   │       ├── SubjectRepository.kt
-│   │   │   │       └── MaterialRepository.kt
-│   │   │   ├── ui/
-│   │   │   │   ├── auth/
-│   │   │   │   │   ├── LoginActivity.kt
-│   │   │   │   │   └── RegisterActivity.kt
-│   │   │   │   ├── main/
-│   │   │   │   │   ├── MainActivity.kt
-│   │   │   │   │   └── MainViewModel.kt
-│   │   │   │   ├── material/
-│   │   │   │   │   ├── ViewMaterialActivity.kt
-│   │   │   │   │   ├── ViewMaterialViewModel.kt
-│   │   │   │   │   ├── MaterialAdapter.kt
-│   │   │   │   │   └── MaterialViewHolder.kt
-│   │   │   │   ├── profile/
-│   │   │   │   │   ├── ProfileActivity.kt
-│   │   │   │   │   └── ProfileViewModel.kt
-│   │   │   │   └── common/
-│   │   │   │       ├── BaseActivity.kt
-│   │   │   │       └── BaseViewModel.kt
-│   │   │   ├── utils/
-│   │   │   │   ├── Constants.kt
-│   │   │   │   ├── Extensions.kt
-│   │   │   │   ├── FileUtils.kt
-│   │   │   │   └── PDFUtils.kt
-│   │   │   └── service/
-│   │   │       └── DownloadService.kt
-│   │   └── res/
-│   │       ├── layout/
-│   │       │   ├── activity_main.xml
-│   │       │   ├── activity_view_material.xml
-│   │       │   ├── item_material.xml
-│   │       │   └── ... other layouts ...
-│   │       ├── drawable/
-│   │       │   ├── ic_pdf.xml
-│   │       │   ├── ic_download.xml
-│   │       │   └── ... other drawables ...
-│   │       ├── values/
-│   │       │   ├── strings.xml
-│   │       │   ├── colors.xml
-│   │       │   └── themes.xml
-│   │       └── menu/
-│   │           ├── material_menu.xml
-│   │           └── ... other menus ...
-│   └── test/
-│       ├── java/
-│       │   └── com/babbira/studentspartner/
-│       │       ├── ViewMaterialViewModelTest.kt
-│       │       └── MaterialRepositoryTest.kt
-│       └── resources/
-└── build.gradle.kts
+collegeList/
+  ├── {college_name}/
+  │   └── combination/
+  │       └── {combination_name}/
+  │           └── semesters/
+  │               └── {semester}/
+  │                   ├── subjectList/
+  │                   │   └── {subject_name}/
+  │                   └── timetables/
+  │                       ├── class_timetable
+  │                       └── exam_timetable
+users/
+  └── {user_id}/
+      ├── profile_info
+      └── uploaded_materials
 ```
 
-## Features in Detail
+### Security Features
+- **Firebase Authentication**: Secure user authentication.
+- **Firestore Security Rules**: Protects data access.
+- **File access control**: Ensures only authorized access.
+- **Data validation**: Validates data before processing.
+- **Session management**: Manages user sessions securely.
 
-### 1. Authentication Flow
-- Splash screen checks authentication state
-- Login/Register options
-- Google Sign-In integration
-- Password reset via email
-- Session management
-- Auto-login for returning users
+### Performance Optimizations
+- **Image compression**: Reduces image sizes for faster loading.
+- **Lazy loading**: Loads data as needed to improve performance.
+- **Efficient queries**: Optimizes database queries.
+- **Data caching**: Caches data for quicker access.
+- **Background operations**: Performs tasks in the background to enhance user experience.
 
-### 2. Profile Management
-- Profile creation wizard
-- College selection with search
-- Subject selection with add option
-- Semester selection (1-10)
-- Section selection (A-Z)
-- Profile picture upload
-- Information update
-
-### 3. Material Management
-- Upload study materials
-- Organize by subject/semester
-- Preview before upload
-- Download for offline use
-- Share via link
-- Delete own uploads
-- Report inappropriate content
-
-### 4. User Interface
-- Clean Material Design
-- Dark mode support
-- Responsive layouts
-- Loading indicators
-- Error handling
-- Pull-to-refresh
-- Infinite scrolling
-
-### 5. Performance Features
-- Material caching
-- Image compression
-- Lazy loading
-- Offline support
-- Background sync
-
-## Security Measures
-- Firebase Authentication
-- Firestore security rules
-- File access control
-- Data validation
-- Session management
-- Secure file storage
-
-## Future Enhancements
-1. Chat Feature
-   - Direct messaging
-   - Group discussions
-   - File sharing in chats
-
-2. Advanced Search
-   - Full-text search
-   - Filter by type/date
-   - Tags and categories
-
-3. Notifications
-   - New material alerts
-   - Updates from college
-   - Chat notifications
-
-4. Social Features
-   - Follow other users
-   - Share materials
-   - Discussion forums
-
-5. Analytics
-   - Usage statistics
-   - Popular materials
-   - User engagement
-
-## Installation
-1. Clone the repository
-2. Set up Firebase project
+## Installation & Setup
+1. Clone repository
+2. Configure Firebase
 3. Add google-services.json
 4. Build and run
 
+## Future Enhancements
+1. Chat functionality
+2. Advanced search
+3. Notifications system
+4. Social features
+5. Analytics integration
+
 ## Contributing
-1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+[Standard contribution guidelines]
 
 ## License
-[Add your license details]
+[License details]
 
 ## Contact
 Developer: Mithun
 Email: mithunbabbira@gmail.com
-GitHub: https://github.com/mithunbabbira
-
-### Core Functionality Details
-
-#### Profile Management Flow
-1. User Registration/Login
-2. Profile Creation
-   - Name and phone number validation
-   - College selection with add option
-   - Subject selection with add option
-   - Fixed semester selection (1st to 10th)
-   - Fixed section selection (A to Z)
-3. Profile Update
-   - Confirmation dialog before updates
-   - Real-time validation
-   - Data persistence in Firestore
-
-#### Data Validation Rules
-- Name: Required field
-- Phone: Required field, numeric only
-- College: Required field, selected from dropdown or added new
-- Subject: Required field, selected from dropdown or added new
-- Semester: Required field, selected from fixed options (1-10)
-- Section: Required field, selected from fixed options (A-Z)
-
-### Error Handling
-- Network connectivity checks
-- Firebase operation error handling
-- User input validation
-- Proper error messages to users
-- Graceful degradation
-
-### UI/UX Features
-- Loading indicators during operations
-- Disabled states for incomplete forms
-- Clear feedback for user actions
-- Confirmation dialogs for important actions
-- Material Design components usage
-- Responsive layout for different screen sizes
-
-### Security Measures
-- Firebase Authentication integration
-- Data access rules in Firestore
-- User data privacy
-- Session management
-- Secure data transmission
-
-### Performance Considerations
-- Efficient Firestore queries
-- Data caching
-- Lazy loading of dropdowns
-- Resource optimization
-- Memory management
-
-### Testing
-#### Unit Tests
-- ViewModel tests
-- Repository tests
-- Utility function tests
-
-#### Integration Tests
-- Firebase integration tests
-- UI flow tests
-- Data persistence tests
-
-#### Manual Testing Checklist
-- Profile creation flow
-- Data validation
-- Error scenarios
-- Network conditions
-- Device compatibility
-
-### Development Setup
-1. Clone the repository
-2. Set up Firebase project
-3. Add google-services.json
-4. Configure Firestore rules
-5. Build and run
-
-### Coding Standards
-- Kotlin coding conventions
-- MVVM architecture patterns
-- Clean code principles
-- Documentation requirements
-- Code review process
-
-### Version Control
-- Git branching strategy
-- Commit message conventions
-- PR review process
-- Release tagging
-
-### CI/CD
-- Build automation
-- Test automation
-- Deployment process
-- Version management
-
-### Troubleshooting Guide
-Common issues and solutions:
-1. Firebase connection issues
-2. Data synchronization problems
-3. UI rendering issues
-4. Performance bottlenecks
-
-### App Screenshots
-[Add screenshots of key screens]
-- Login/Registration
-- Profile Creation
-- College Selection
-- Subject Selection
-- Profile Update
-
-### Release History
-- Version 1.0.0
-  - Initial release
-  - Basic profile management
-  - College and subject management
-  - Firebase integration
-
-### Known Issues
-- List any known bugs or limitations
-- Planned fixes
-- Workarounds if available
-
-### Support
-- Bug reporting process
-- Feature request process
-- Contact information
-- Support channels
-
-### Privacy Policy
-- Data collection details
-- Data usage information
-- User privacy rights
-- Data deletion process
-
-### Terms of Service
-- Usage terms
-- User responsibilities
-- Service limitations
-- Legal considerations
-
-### Material Viewing Features
-- PDF viewing with zoom and scroll support
-- Download progress tracking
-- Offline access to downloaded materials
-- Share functionality
-- Material details display (title, description, upload date)
-- Material actions (download, share, report)
-- Loading state handling
-- Error handling with retry options 
+GitHub: github.com/mithunbabbira 
