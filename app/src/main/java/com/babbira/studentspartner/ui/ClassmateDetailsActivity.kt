@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.babbira.studentspartner.R
 import com.babbira.studentspartner.adapters.ClassmatesAdapter
 import com.babbira.studentspartner.databinding.ActivityClassmateDetailsBinding
+import com.babbira.studentspartner.utils.LoaderManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 class ClassmateDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityClassmateDetailsBinding
     private val db = FirebaseFirestore.getInstance()
     private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val loaderManager = LoaderManager.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class ClassmateDetailsActivity : AppCompatActivity() {
     }
 
     private fun fetchClassmates() {
-        binding.progressBar.visibility = View.VISIBLE
+        loaderManager.showLoader(this)
 
         // First get current user's details
         currentUser?.let { user ->
@@ -60,7 +63,7 @@ class ClassmateDetailsActivity : AppCompatActivity() {
                             .whereEqualTo("semester", mySemester)
                             .get()
                             .addOnSuccessListener { documents ->
-                                binding.progressBar.visibility = View.GONE
+                                loaderManager.hideLoader()
                                 val classmatesList = documents.mapNotNull { doc ->
                                     // Skip current user from the list
                                     if (doc.id != user.uid) {
@@ -79,13 +82,13 @@ class ClassmateDetailsActivity : AppCompatActivity() {
                                 setupRecyclerView(classmatesList)
                             }
                             .addOnFailureListener { e ->
-                                binding.progressBar.visibility = View.GONE
+                                loaderManager.hideLoader()
                                 Toast.makeText(this, "Error fetching classmates: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }
                 }
                 .addOnFailureListener { e ->
-                    binding.progressBar.visibility = View.GONE
+                    loaderManager.hideLoader()
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
