@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/background">
 
         <TextView
             android:id="@+id/titleHeader"
@@ -17,6 +19,7 @@
             android:text="Add New Study Material"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="24dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -27,13 +30,15 @@
             android:layout_marginTop="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface"
             app:layout_constraintTop_toBottomOf="@id/titleHeader">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/surface">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -42,13 +47,15 @@
                     android:layout_marginBottom="16dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:startIconDrawable="@drawable/ic_title"
-                    app:startIconTint="?attr/colorPrimary">
+                    app:startIconTint="@color/primary"
+                    app:hintTextColor="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/titleEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="text"/>
+                        android:inputType="text"
+                        android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -58,14 +65,16 @@
                     android:layout_marginBottom="16dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:startIconDrawable="@drawable/ic_description"
-                    app:startIconTint="?attr/colorPrimary">
+                    app:startIconTint="@color/primary"
+                    app:hintTextColor="@color/text_secondary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
-                        android:minLines="3"/>
+                        android:minLines="3"
+                        android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -76,13 +85,15 @@
                     android:layout_marginBottom="24dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     app:startIconDrawable="@drawable/ic_chapter"
-                    app:startIconTint="?attr/colorPrimary">
+                    app:startIconTint="@color/primary"
+                    app:hintTextColor="@color/text_secondary">
 
                     <AutoCompleteTextView
                         android:id="@+id/chapterDropdown"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"/>
+                        android:inputType="none"
+                        android:textColor="@color/text_primary"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -92,6 +103,8 @@
                     android:text="Select PDF"
                     android:layout_marginBottom="16dp"
                     app:icon="@drawable/ic_pdf"
+                    app:iconTint="@color/primary"
+                    android:textColor="@color/text_primary"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
                 <LinearLayout
@@ -107,6 +120,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:progressTint="@color/primary"
                         android:max="100" />
 
                     <TextView
@@ -116,7 +130,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="4dp"
                         android:text="0%"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/text_primary" />
 
                 </LinearLayout>
 
@@ -126,7 +140,9 @@
                     android:layout_height="wrap_content"
                     android:text="Upload Material"
                     app:icon="@drawable/ic_upload"
-                    android:padding="12dp"/>
+                    android:padding="12dp"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/primary"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
