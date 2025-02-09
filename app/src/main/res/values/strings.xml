@@ -6,4 +6,13 @@
     <!-- Toolbar Titles -->
     <string name="materials">Materials</string>
     <string name="my_classmates">My Classmates</string>
+
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_profile_picture">Change Profile Picture</string>
+
+    <string name="upload_timetable">Upload Timetable</string>
+
+    <string name="timetable">Timetable</string>
+    <string name="class_timetable">Class Timetable</string>
+    <string name="exam_timetable">Exam Timetable</string>
 </resources>

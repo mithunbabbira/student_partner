@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.babbira.studentspartner.R
 import com.babbira.studentspartner.data.model.Timetable
 import com.babbira.studentspartner.databinding.ActivityUploadTimetableBinding
 import com.babbira.studentspartner.utils.UserDetails
@@ -38,10 +39,16 @@ class UploadTimetableActivity : AppCompatActivity() {
         binding = ActivityUploadTimetableBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        setupToolbar()
         setupViews()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = getString(R.string.upload_timetable)
+        }
     }
 
     private fun setupViews() {

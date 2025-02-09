@@ -31,7 +31,6 @@ class TimetableActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimetableBinding
     private var pdfRenderer: PdfRenderer? = null
     private var currentPage: PdfRenderer.Page? = null
-
     private var totalPages = 0
     private var currentPageNumber = 0
     private val db = FirebaseFirestore.getInstance()
@@ -55,10 +54,20 @@ class TimetableActivity : AppCompatActivity() {
         binding = ActivityTimetableBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
+        setupToolbar()
         fetchTimetable(intent.getStringExtra(EXTRA_TIMETABLE_TYPE))
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = when(intent.getStringExtra(EXTRA_TIMETABLE_TYPE)) {
+                TYPE_CLASS -> getString(R.string.class_timetable)
+                TYPE_EXAM -> getString(R.string.exam_timetable)
+                else -> getString(R.string.timetable)
+            }
+        }
     }
 
     private fun fetchTimetable(type: String?) {

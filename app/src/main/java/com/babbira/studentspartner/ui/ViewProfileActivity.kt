@@ -45,6 +45,8 @@ class ViewProfileActivity : AppCompatActivity() {
         binding = ActivityViewProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupToolbar()
+        
         // Initialize adapters first
         setupCollegeAdapter()
         setupCombinationAdapter()
@@ -54,6 +56,19 @@ class ViewProfileActivity : AppCompatActivity() {
         setupTextChangeListeners()
         setupUpdateButton()
         observeViewModel()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = getString(R.string.edit_profile)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     private fun setupCollegeAdapter() {
