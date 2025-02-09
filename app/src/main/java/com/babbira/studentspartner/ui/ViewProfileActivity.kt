@@ -17,6 +17,7 @@ import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
 import com.babbira.studentspartner.databinding.DialogAddItemBinding
 import com.babbira.studentspartner.utils.DialogUtils
+import com.babbira.studentspartner.utils.ImageUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -128,11 +129,18 @@ class ViewProfileActivity : AppCompatActivity() {
             return
         }
 
+        // Compress and resize image using utility
+        val compressedImage = ImageUtils.compressImage(imageUri, contentResolver)
+        if (compressedImage == null) {
+            Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val imageRef = storageRef.child("profile_pics/$userCollege/$userCombination/$userId.jpg")
-        
         binding.progressBar.visibility = View.VISIBLE
 
-        imageRef.putFile(imageUri)
+        // Upload compressed image
+        imageRef.putBytes(compressedImage)
             .addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                     updateProfileImageUrl(downloadUri.toString())
