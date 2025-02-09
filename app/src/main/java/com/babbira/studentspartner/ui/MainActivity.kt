@@ -64,8 +64,7 @@ class MainActivity : AppCompatActivity() {
         // Setup navigation drawer
         setupNavigation()
 
-        // Update navigation header with user info
-        updateNavigationHeader()
+
 
         setupRecyclerView()
         setupAddSubjectButton()
@@ -75,6 +74,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         checkUserProfile() // Check profile every time activity resumes
+        // Update navigation header with user info
+        updateNavigationHeader()
+
     }
 
     private fun setupRecyclerView() {
@@ -321,7 +323,11 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Logout")
             .setMessage("Are you sure you want to logout?")
             .setPositiveButton("Yes") { _, _ ->
+                // Clear all user data from SharedPreferences
+                UserDetails.clearUserData(this)
+                // Sign out from Firebase
                 FirebaseAuth.getInstance().signOut()
+                // Navigate to login screen
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }

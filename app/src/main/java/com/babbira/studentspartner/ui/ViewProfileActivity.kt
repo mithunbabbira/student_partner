@@ -217,6 +217,11 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun loadProfileImage(imageUrl: String?) {
         if (imageUrl != null) {
+            UserDetails.setProfileImageUrl(this,imageUrl)
+        }else{
+            UserDetails.setProfileImageUrl(this,"")
+        }
+        if (imageUrl != null) {
             Glide.with(this)
                 .load(imageUrl)
                 .placeholder(R.drawable.ic_profile_placeholder)
@@ -597,6 +602,54 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun populateFields(profile: UserProfile) {
         binding.apply {
+            // Set background colors
+            root.setBackgroundColor(getColor(R.color.background))
+            contentLayout.setBackgroundColor(getColor(R.color.background))
+            
+            // Set text colors and backgrounds for input fields
+            nameEditText.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            phoneEditText.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            collegeAutoComplete.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            combinationAutoComplete.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            semesterAutoComplete.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            sectionAutoComplete.apply {
+                setTextColor(getColor(R.color.text_primary))
+                setHintTextColor(getColor(R.color.text_secondary))
+                background = getDrawable(R.drawable.edit_text_background)
+            }
+            
+            // Set button colors
+            updateProfileButton.apply {
+                setBackgroundColor(getColor(R.color.primary))
+                setTextColor(getColor(R.color.white))
+            }
+
+            // Populate the fields with data
             nameEditText.setText(profile.name)
             phoneEditText.setText(profile.phone)
             collegeAutoComplete.setText(profile.college)
