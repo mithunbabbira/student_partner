@@ -15,4 +15,6 @@
     <string name="timetable">Timetable</string>
     <string name="class_timetable">Class Timetable</string>
     <string name="exam_timetable">Exam Timetable</string>
+
+    <string name="loading">Loading...</string>
 </resources>

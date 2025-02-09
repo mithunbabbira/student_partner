@@ -26,6 +26,7 @@ import android.view.MenuItem
 import android.view.Gravity
 import android.widget.TextView
 import androidx.core.view.GravityCompat
+import com.babbira.studentspartner.utils.LoaderManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toolbar: Toolbar
+    private val loaderManager = LoaderManager.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,9 +162,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUserProfile() {
         println("MainActivity: Checking user profile")
+        loaderManager.showLoader(this)  // Show loader
+        
         val currentUser = auth.currentUser
         if (currentUser == null) {
             println("MainActivity: No user found, redirecting to login")
+            loaderManager.hideLoader()  // Hide loader
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
@@ -173,31 +178,33 @@ class MainActivity : AppCompatActivity() {
             .document(currentUser.uid)
             .get()
             .addOnSuccessListener { document ->
+                loaderManager.hideLoader()  // Hide loader
                 if (document.exists()) {
                     println("MainActivity: User profile found")
                     saveUserDetailsToPreferences(document)
                     fetchSubjectList()
                     Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
-                    // User exists, stay on MainActivity
                 } else {
                     println("MainActivity: No user profile found, redirecting to profile creation")
-                    // User doesn't exist, redirect to profile creation
                     startActivity(Intent(this, ViewProfileActivity::class.java))
-                    
                 }
             }
             .addOnFailureListener { e ->
+                loaderManager.hideLoader()  // Hide loader
                 println("MainActivity: Error checking user profile: ${e.message}")
                 Toast.makeText(this, "Error checking profile: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun fetchSubjectList() {
+        loaderManager.showLoader(this)  // Show loader
+        
         val college = UserDetails.getUserCollege(this)
         val combination = UserDetails.getUserCombination(this)
         val semester = UserDetails.getUserSemester(this)
 
         if (college.isEmpty() || combination.isEmpty() || semester.isEmpty()) {
+            loaderManager.hideLoader()  // Hide loader
             Log.e("MainActivity", "Missing user details")
             return
         }
@@ -211,11 +218,13 @@ class MainActivity : AppCompatActivity() {
             .collection("subjectList")
             .get()
             .addOnSuccessListener { documents ->
+                loaderManager.hideLoader()  // Hide loader
                 val subjects = documents.documents.map { it.id }
                 subjectListAdapter.updateSubjects(subjects)
                 Log.d("MainActivity", "Fetched ${subjects.size} subjects")
             }
             .addOnFailureListener { e ->
+                loaderManager.hideLoader()  // Hide loader
                 Log.e("MainActivity", "Error fetching subject list", e)
                 Toast.makeText(this, "Error loading subjects", Toast.LENGTH_SHORT).show()
             }
