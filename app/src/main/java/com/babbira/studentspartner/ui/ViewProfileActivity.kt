@@ -19,6 +19,7 @@ import com.babbira.studentspartner.databinding.DialogAddItemBinding
 import com.babbira.studentspartner.utils.DialogUtils
 import com.babbira.studentspartner.utils.ImageUtils
 import com.babbira.studentspartner.utils.LoaderManager
+import com.babbira.studentspartner.utils.UserDetails
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -161,6 +162,7 @@ class ViewProfileActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                     updateProfileImageUrl(downloadUri.toString())
+                    UserDetails.setProfileImageUrl(this,downloadUri.toString())
                 }
             }
             .addOnFailureListener {

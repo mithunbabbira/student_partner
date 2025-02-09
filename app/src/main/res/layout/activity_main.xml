@@ -5,23 +5,26 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".ui.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/primary"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/primary"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -31,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="16dp"
+            android:background="@color/background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
@@ -41,6 +45,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/surface"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
@@ -59,8 +64,10 @@
                         android:padding="12dp"
                         android:text="Class\nTimetable"
                         android:textAlignment="center"
+                        android:textColor="@color/text_primary"
                         app:icon="@drawable/ic_timetable"
                         app:iconGravity="top"
+                        app:iconTint="@color/primary"
                         app:iconSize="24dp" />
 
                     <com.google.android.material.button.MaterialButton
@@ -72,8 +79,10 @@
                         android:padding="12dp"
                         android:text="Exam\nTimetable"
                         android:textAlignment="center"
+                        android:textColor="@color/text_primary"
                         app:icon="@drawable/ic_exam"
                         app:iconGravity="top"
+                        app:iconTint="@color/primary"
                         app:iconSize="24dp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
@@ -86,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Your Subjects"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +117,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:text="Add New Subject"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/primary"
                 app:icon="@drawable/ic_add"
+                app:iconTint="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -120,6 +133,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/surface"
+        app:itemTextColor="@color/text_primary"
+        app:itemIconTint="@color/text_primary"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu" />
 

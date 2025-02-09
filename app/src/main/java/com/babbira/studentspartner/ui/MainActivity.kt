@@ -27,6 +27,8 @@ import android.view.Gravity
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import com.babbira.studentspartner.utils.LoaderManager
+import com.bumptech.glide.Glide
+import android.widget.ImageView
 
 
 class MainActivity : AppCompatActivity() {
@@ -285,8 +287,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateNavigationHeader() {
         val headerView = navigationView.getHeaderView(0)
+        
+        // Update name and email
         headerView.findViewById<TextView>(R.id.navHeaderName).text = UserDetails.getUserName(this)
         headerView.findViewById<TextView>(R.id.navHeaderEmail).text = UserDetails.getUserEmail(this)
+        
+        // Add profile image loading
+        val profileImageView = headerView.findViewById<ImageView>(R.id.navHeaderImage)
+        val profileImageUrl = UserDetails.getProfileImageUrl(this)
+        
+        if (profileImageUrl.isNotEmpty()) {
+            Glide.with(this)
+                .load(profileImageUrl)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .circleCrop()
+                .into(profileImageView)
+        } else {
+            profileImageView.setImageResource(R.drawable.ic_person)
+        }
     }
 
     private fun showAboutDialog() {

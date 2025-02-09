@@ -120,6 +120,18 @@ object UserDetails {
         return getPreferences(context).getString(Constants.PreferenceKeys.USER_ID, "") ?: ""
     }
 
+    // User Profile Image URL
+    fun setProfileImageUrl(context: Context, imageUrl: String) {
+        getEditor(context).apply {
+            putString(Constants.PreferenceKeys.USER_PROFILE_IMAGE, imageUrl)
+            apply()
+        }
+    }
+
+    fun getProfileImageUrl(context: Context): String {
+        return getPreferences(context).getString(Constants.PreferenceKeys.USER_PROFILE_IMAGE, "") ?: ""
+    }
+
     // Clear all user data
     fun clearUserData(context: Context) {
         getEditor(context).apply {

@@ -13,5 +13,6 @@ object Constants {
         const val USER_SEMESTER = "userSemester"
         const val USER_SECTION = "userSection"
         const val IS_LOGGED_IN = "isLoggedIn"
+        const val USER_PROFILE_IMAGE = "user_profile_image"
     }
 } 
