@@ -20,6 +20,7 @@ import com.babbira.studentspartner.R
 import com.babbira.studentspartner.data.model.SubjectMaterial
 import com.babbira.studentspartner.databinding.FragmentAddNewMaterialBinding
 import com.babbira.studentspartner.ui.ViewMaterialActivity.Companion.EXTRA_SUBJECT_NAME
+import com.babbira.studentspartner.utils.LoaderManager
 import com.babbira.studentspartner.utils.UserDetails
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -78,6 +79,7 @@ class AddNewMaterialFragment : Fragment() {
     }
 
     private var listener: AddNewMaterialListener? = null
+    private val loaderManager = LoaderManager.getInstance()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -160,7 +162,9 @@ class AddNewMaterialFragment : Fragment() {
             return
         }
 
-        binding.uploadProgress.isVisible = true
+        // Show both loader and progress
+        loaderManager.showLoader(requireContext())
+        binding.uploadProgressLayout.isVisible = true  // Make progress layout visible
         binding.uploadButton.isEnabled = false
 
         // First upload PDF to Storage
@@ -174,8 +178,10 @@ class AddNewMaterialFragment : Fragment() {
         selectedPdfUri?.let { uri ->
             pdfRef.putFile(uri)
                 .addOnProgressListener { taskSnapshot ->
+                    // Calculate and show upload progress
                     val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toInt()
                     binding.uploadProgress.progress = progress
+                    binding.uploadProgressText.text = "$progress%"
                 }
                 .continueWithTask { task ->
                     if (!task.isSuccessful) {
@@ -184,11 +190,11 @@ class AddNewMaterialFragment : Fragment() {
                     pdfRef.downloadUrl
                 }
                 .addOnSuccessListener { downloadUrl ->
-                    // After PDF upload, save material details to Firestore
                     saveMaterialToFirestore(downloadUrl.toString())
                 }
                 .addOnFailureListener { e ->
-                    binding.uploadProgress.isVisible = false
+                    loaderManager.hideLoader()
+                    binding.uploadProgressLayout.isVisible = false
                     binding.uploadButton.isEnabled = true
                     Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -239,7 +245,8 @@ class AddNewMaterialFragment : Fragment() {
         docRef.set(material)
             .addOnSuccessListener {
                 Log.d("AddNewMaterial", "Material saved successfully with ID: ${docRef.id}")
-                binding.uploadProgress.isVisible = false
+                loaderManager.hideLoader()
+                binding.uploadProgressLayout.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Material uploaded successfully", Toast.LENGTH_SHORT).show()
                 listener?.onMaterialUploaded()
@@ -247,7 +254,8 @@ class AddNewMaterialFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Log.e("AddNewMaterial", "Failed to save material", e)
-                binding.uploadProgress.isVisible = false
+                loaderManager.hideLoader()
+                binding.uploadProgressLayout.isVisible = false
                 binding.uploadButton.isEnabled = true
                 Toast.makeText(context, "Failed to save material: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -260,6 +268,8 @@ class AddNewMaterialFragment : Fragment() {
         selectedPdfUri = null
         binding.selectPdfButton.text = "Select PDF"
         binding.selectPdfButton.setIconResource(R.drawable.ic_pdf)
+        binding.uploadProgressLayout.isVisible = false  // Hide progress layout
+        binding.uploadProgress.progress = 0  // Reset progress
     }
 
     private fun checkAndRequestPermission() {
