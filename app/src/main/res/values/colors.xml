@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Default Android colors (required) -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,5 +8,29 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">@color/purple_500</color>
+
+    <!-- Modern Material Theme Colors -->
+    <color name="primary">#2196F3</color>          <!-- Blue 500 -->
+    <color name="primary_dark">#1976D2</color>     <!-- Blue 700 -->
+    <color name="primary_light">#BBDEFB</color>    <!-- Blue 100 -->
+    <color name="accent">#FF4081</color>           <!-- Pink A200 -->
+    
+    <!-- Surface and Background -->
+    <color name="surface">#FFFFFF</color>
+    <color name="background">#F5F7FA</color>
+    <color name="card_background">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1F2937</color>     <!-- Dark gray for primary text -->
+    <color name="text_secondary">#6B7280</color>   <!-- Medium gray for secondary text -->
+    <color name="text_hint">#9CA3AF</color>        <!-- Light gray for hints -->
+    
+    <!-- Component Colors -->
+    <color name="button_primary">@color/primary</color>
+    <color name="button_secondary">#F3F4F6</color>
+    <color name="divider">#E5E7EB</color>
+    <color name="ripple">#1A000000</color>
+    <color name="error">#DC2626</color>            <!-- Red 600 -->
+    <color name="success">#059669</color>          <!-- Green 600 -->
+    <color name="warning">#D97706</color>          <!-- Yellow 600 -->
 </resources>
