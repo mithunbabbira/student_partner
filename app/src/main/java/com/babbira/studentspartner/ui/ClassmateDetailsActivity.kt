@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.babbira.studentspartner.R
 import com.babbira.studentspartner.adapters.ClassmatesAdapter
 import com.babbira.studentspartner.databinding.ActivityClassmateDetailsBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -25,11 +26,16 @@ class ClassmateDetailsActivity : AppCompatActivity() {
         binding = ActivityClassmateDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "My Classmates"
-
+        setupToolbar()
         fetchClassmates()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = getString(R.string.my_classmates)
+        }
     }
 
     private fun fetchClassmates() {

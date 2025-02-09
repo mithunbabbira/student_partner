@@ -32,16 +32,29 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
         binding = ActivityViewMaterialBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup ViewPager first
+        setupToolbar()
         setupViewPager()
 
         // Then fetch materials
-        subjectName = intent.getStringExtra("subject_name")
+        subjectName = intent.getStringExtra(EXTRA_SUBJECT_NAME)
         if (subjectName != null) {
             fetchMaterials(subjectName!!)
         }
         
         setupAddNewButton()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbarLayout.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = subjectName ?: getString(R.string.materials)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     private fun setupAddNewButton() {

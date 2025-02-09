@@ -2,4 +2,8 @@
     <string name="app_name">Students partner</string>
 
     <string name="default_android_client_id">740968262592-0k77vkvbchhq88ka20ptgduo1kvr7g4r.apps.googleusercontent.com</string>
+
+    <!-- Toolbar Titles -->
+    <string name="materials">Materials</string>
+    <string name="my_classmates">My Classmates</string>
 </resources>
