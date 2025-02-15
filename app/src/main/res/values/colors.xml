@@ -10,27 +10,27 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Modern Material Theme Colors -->
-    <color name="primary">#00B4D8</color>          <!-- Bright Cyan -->
-    <color name="primary_dark">#0096C7</color>     <!-- Dark Cyan -->
-    <color name="primary_light">#CAF0F8</color>    <!-- Light Cyan -->
-    <color name="accent">#FF0A54</color>           <!-- Neon Pink -->
+    <color name="primary">#29ABE2</color>          <!-- Bright Blue -->
+    <color name="primary_dark">#1E8CB8</color>     <!-- Darker Blue for status bar -->
+    <color name="primary_light">#B3E5FC</color>    <!-- Light Blue -->
+    <color name="accent">#FFC107</color>           <!-- Golden Yellow -->
     
     <!-- Surface and Background -->
-    <color name="surface">#FFFFFF</color>
-    <color name="background">#F8F9FD</color>
-    <color name="card_background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>          <!-- Pure White -->
+    <color name="background">#F5F5F5</color>       <!-- Light Gray -->
+    <color name="card_background">#FFFFFF</color>  <!-- Pure White -->
     
     <!-- Text Colors -->
-    <color name="text_primary">#1B2D45</color>     <!-- Dark Blue-Gray -->
-    <color name="text_secondary">#48566E</color>   <!-- Medium Blue-Gray -->
-    <color name="text_hint">#90A4AE</color>        <!-- Light Blue-Gray -->
+    <color name="text_primary">#212121</color>     <!-- Dark Gray -->
+    <color name="text_secondary">#757575</color>   <!-- Medium Gray -->
+    <color name="text_hint">#BDBDBD</color>        <!-- Light Gray -->
     
     <!-- Component Colors -->
     <color name="button_primary">@color/primary</color>
-    <color name="button_secondary">#F1F5F9</color>
-    <color name="divider">#E2E8F0</color>
+    <color name="button_secondary">#F5F5F5</color>
+    <color name="divider">#EEEEEE</color>
     <color name="ripple">#1A000000</color>
-    <color name="error">#FF3B5B</color>            <!-- Bright Red -->
-    <color name="success">#06D6A0</color>          <!-- Bright Green -->
-    <color name="warning">#FFB703</color>          <!-- Bright Yellow -->
+    <color name="error">#F44336</color>            <!-- Red -->
+    <color name="success">#4CAF50</color>          <!-- Green -->
+    <color name="warning">#FF9800</color>          <!-- Orange -->
 </resources>
