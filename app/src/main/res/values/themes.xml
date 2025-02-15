@@ -116,4 +116,10 @@
         <item name="cardCornerRadius">8dp</item>
         <item name="contentPadding">16dp</item>
     </style>
+
+    <style name="Theme.StudentsPartner.NoActionBar" parent="Theme.StudentsPartner">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

@@ -12,9 +12,9 @@
             android:title="My Classmates" />
 
         <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info"
-            android:title="About Us" />
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/ic_contact"
+            android:title="Contact Us" />
 
         <item
             android:id="@+id/nav_logout"

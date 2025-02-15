@@ -31,7 +31,7 @@
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.StudentsPartner.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -65,6 +65,10 @@
 
         <activity
             android:name=".ui.ClassmateDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.ContactActivity"
             android:exported="false" />
 
         <provider

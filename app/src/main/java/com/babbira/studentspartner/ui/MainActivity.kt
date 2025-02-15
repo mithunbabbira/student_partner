@@ -275,8 +275,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_classmates -> {
                     startActivity(Intent(this, ClassmateDetailsActivity::class.java))
                 }
-                R.id.nav_about -> {
-                    showAboutDialog()
+                R.id.nav_contact -> {
+                    startActivity(Intent(this, ContactActivity::class.java))
                 }
                 R.id.nav_logout -> {
                     showLogoutConfirmation()
