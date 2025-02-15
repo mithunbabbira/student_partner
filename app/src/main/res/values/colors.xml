@@ -10,27 +10,28 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Modern Material Theme Colors -->
-    <color name="primary">#29ABE2</color>          <!-- Bright Blue -->
-    <color name="primary_dark">#1E8CB8</color>     <!-- Darker Blue for status bar -->
-    <color name="primary_light">#B3E5FC</color>    <!-- Light Blue -->
-    <color name="accent">#FFC107</color>           <!-- Golden Yellow -->
+    <color name="primary">#FF5722</color>          <!-- Vibrant Orange-Red -->
+    <color name="primary_dark">#E64A19</color>     <!-- Darker Orange-Red for status bar -->
+    <color name="primary_light">#FFCCBC</color>    <!-- Light Orange -->
+    <color name="accent">#9C27B0</color>           <!-- Rich Purple -->
     
     <!-- Surface and Background -->
     <color name="surface">#FFFFFF</color>          <!-- Pure White -->
-    <color name="background">#F5F5F5</color>       <!-- Light Gray -->
+    <color name="background">#FFF3E0</color>       <!-- Very Light Orange Tint -->
     <color name="card_background">#FFFFFF</color>  <!-- Pure White -->
     
     <!-- Text Colors -->
     <color name="text_primary">#212121</color>     <!-- Dark Gray -->
     <color name="text_secondary">#757575</color>   <!-- Medium Gray -->
     <color name="text_hint">#BDBDBD</color>        <!-- Light Gray -->
+    <color name="text_on_primary">#FFFFFF</color>  <!-- White text for primary colored backgrounds -->
     
     <!-- Component Colors -->
     <color name="button_primary">@color/primary</color>
-    <color name="button_secondary">#F5F5F5</color>
+    <color name="button_secondary">@color/accent</color>
     <color name="divider">#EEEEEE</color>
     <color name="ripple">#1A000000</color>
     <color name="error">#F44336</color>            <!-- Red -->
     <color name="success">#4CAF50</color>          <!-- Green -->
-    <color name="warning">#FF9800</color>          <!-- Orange -->
+    <color name="warning">#FFC107</color>          <!-- Yellow -->
 </resources>

@@ -8,7 +8,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/accent</item>
         <item name="colorSecondaryVariant">@color/accent</item>
-        <item name="colorOnSecondary">@color/text_primary</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/text_primary</item>
@@ -92,8 +92,8 @@
     </style>
 
     <style name="Widget.StudentsPartner.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="strokeColor">@color/primary</item>
-        <item name="android:textColor">@color/primary</item>
+        <item name="strokeColor">@color/accent</item>
+        <item name="android:textColor">@color/accent</item>
         <item name="cornerRadius">8dp</item>
     </style>
 
@@ -115,6 +115,7 @@
         <item name="cardElevation">2dp</item>
         <item name="cardCornerRadius">8dp</item>
         <item name="contentPadding">16dp</item>
+        <item name="rippleColor">@color/ripple</item>
     </style>
 
     <style name="Theme.StudentsPartner.NoActionBar" parent="Theme.StudentsPartner">
