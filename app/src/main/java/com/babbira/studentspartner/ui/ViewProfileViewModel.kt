@@ -19,8 +19,8 @@ class ViewProfileViewModel(
 ) : ViewModel() {
     private val TAG = "ViewProfileViewModel"
 
-    private val _userProfile = MutableLiveData<UserProfile>()
-    val userProfile: LiveData<UserProfile> = _userProfile
+    private val _userProfile = MutableLiveData<UserProfile?>()
+    val userProfile: MutableLiveData<UserProfile?> = _userProfile
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
