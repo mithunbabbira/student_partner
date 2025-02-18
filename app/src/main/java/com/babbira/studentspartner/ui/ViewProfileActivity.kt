@@ -254,7 +254,9 @@ class ViewProfileActivity : AppCompatActivity() {
             }
 
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    binding.collegeInputLayout.error = null
+                }
                 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 
@@ -303,7 +305,9 @@ class ViewProfileActivity : AppCompatActivity() {
             }
 
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    binding.combinationInputLayout.error = null
+                }
                 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 
@@ -421,20 +425,49 @@ class ViewProfileActivity : AppCompatActivity() {
     }
 
     private fun showUpdateProfileConfirmation() {
-        DialogUtils.showConfirmationDialog(
-            context = this,
-            title = "Update Profile",
-            message = "Are you sure you want to update your profile?",
-            onPositiveClick = {
-                // Proceed with profile update
-                val name = binding.nameEditText.text.toString()
-                val phone = binding.phoneEditText.text.toString()
-                viewModel.updateProfile(name, phone)
-            },
-            onNegativeClick = {
-                // Optional: Handle negative click if needed
+        // Get the entered values
+        val enteredCollege = binding.collegeInputLayout.editText?.text.toString().trim()
+        val enteredCombination = binding.combinationInputLayout.editText?.text.toString().trim()
+        
+        // Get the lists from ViewModel
+        val collegeList = viewModel.colleges.value ?: emptyList()
+        val combinationList = viewModel.combination.value ?: emptyList()
+
+        // Validate college and combination existence
+        val isCollegeValid = collegeList.any { it.equals(enteredCollege, ignoreCase = true) }
+        val isCombinationValid = combinationList.any { it.equals(enteredCombination, ignoreCase = true) }
+
+        when {
+            !isCollegeValid -> {
+                binding.collegeInputLayout.error = "Please select a valid college from the list or add a new one"
+                return
             }
-        )
+            !isCombinationValid -> {
+                binding.combinationInputLayout.error = "Please select a valid combination from the list or add a new one"
+                return
+            }
+            else -> {
+                // Clear any previous errors
+                binding.collegeInputLayout.error = null
+                binding.combinationInputLayout.error = null
+
+                // Show confirmation dialog
+                DialogUtils.showConfirmationDialog(
+                    context = this,
+                    title = "Update Profile",
+                    message = "Are you sure you want to update your profile?",
+                    onPositiveClick = {
+                        // Proceed with profile update
+                        val name = binding.nameEditText.text.toString()
+                        val phone = binding.phoneEditText.text.toString()
+                        viewModel.updateProfile(name, phone)
+                    },
+                    onNegativeClick = {
+                        // Optional: Handle negative click if needed
+                    }
+                )
+            }
+        }
     }
 
     private fun observeViewModel() {
