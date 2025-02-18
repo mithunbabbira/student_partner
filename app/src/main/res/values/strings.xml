@@ -96,4 +96,6 @@
     <string name="success_material_deleted">Material deleted successfully</string>
     <string name="error_delete_material_failed">Failed to delete material: %s</string>
     <string name="error_delete_file_failed">Failed to delete file: %s</string>
+    <string name="success_data_cleared">All data cleared successfully</string>
+    <string name="error_clearing_data">Error clearing data</string>
 </resources>

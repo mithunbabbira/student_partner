@@ -134,9 +134,13 @@ object UserDetails {
 
     // Clear all user data
     fun clearUserData(context: Context) {
+        // Clear SharedPreferences
         getEditor(context).apply {
             clear()
             apply()
         }
+        
+        // Also clear all local data using CommonFunctions
+        CommonFunctions.clearAllLocalData(context)
     }
 } 

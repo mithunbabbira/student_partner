@@ -16,6 +16,7 @@ import com.babbira.studentspartner.R
 import com.babbira.studentspartner.data.model.UserProfile
 import com.babbira.studentspartner.databinding.ActivityViewProfileBinding
 import com.babbira.studentspartner.databinding.DialogAddItemBinding
+import com.babbira.studentspartner.utils.CommonFunctions
 import com.babbira.studentspartner.utils.DialogUtils
 import com.babbira.studentspartner.utils.ImageUtils
 import com.babbira.studentspartner.utils.LoaderManager
@@ -512,6 +513,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 loaderManager.showLoader(this)
             } else {
                 loaderManager.hideLoader()
+                CommonFunctions.clearAllLocalData(this)
                 finish()
             }
             binding.updateProfileButton.text = if (isUpdating) "" else getString(R.string.button_update_profile)
