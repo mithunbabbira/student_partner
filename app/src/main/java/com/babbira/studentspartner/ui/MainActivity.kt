@@ -105,18 +105,18 @@ class MainActivity : AppCompatActivity() {
         val subjectNameEditText = dialogView.findViewById<TextInputEditText>(R.id.subjectNameEditText)
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Add New Subject")
+            .setTitle(getString(R.string.dialog_title_add_new_subject))
             .setView(dialogView)
-            .setPositiveButton("Add Subject") { dialog, _ ->
+            .setPositiveButton(getString(R.string.dialog_button_add_subject)) { dialog, _ ->
                 val subjectName = subjectNameEditText.text?.toString()?.trim() ?: ""
                 if (subjectName.isNotEmpty()) {
                     addNewSubject(subjectName)
                 } else {
-                    Toast.makeText(this, "Please enter subject name", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_enter_subject_name), Toast.LENGTH_SHORT).show()
                 }
                 dialog.dismiss()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.dialog_button_cancel), null)
             .show()
     }
 
@@ -155,12 +155,12 @@ class MainActivity : AppCompatActivity() {
             .set(subjectData)
             .addOnSuccessListener {
                 Log.d("MainActivity", "Subject added successfully")
-                Toast.makeText(this, "Subject added successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.success_subject_added), Toast.LENGTH_SHORT).show()
                 fetchSubjectList()
             }
             .addOnFailureListener { e ->
                 Log.e("MainActivity", "Error adding subject", e)
-                Toast.makeText(this, "Error adding subject", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_adding_subject), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity() {
                     println("MainActivity: User profile found")
                     saveUserDetailsToPreferences(document)
                     fetchSubjectList()
-                    Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.welcome_back), Toast.LENGTH_SHORT).show()
                 } else {
                     println("MainActivity: No user profile found, redirecting to profile creation")
                     startActivity(Intent(this, ViewProfileActivity::class.java))
@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 loaderManager.hideLoader()  // Hide loader
                 println("MainActivity: Error checking user profile: ${e.message}")
-                Toast.makeText(this, "Error checking profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_checking_profile, e.message), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -230,7 +230,7 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 loaderManager.hideLoader()  // Hide loader
                 Log.e("MainActivity", "Error fetching subject list", e)
-                Toast.makeText(this, "Error loading subjects", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_loading_subjects), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "Error saving user details to SharedPreferences", e)
             Toast.makeText(
                 this,
-                "Error saving user details",
+                getString(R.string.error_saving_user_details),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -312,17 +312,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun showAboutDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("About Us")
-            .setMessage("Students Partner\nVersion 1.0\n\nDeveloped by Babbira")
-            .setPositiveButton("OK", null)
+            .setTitle(getString(R.string.dialog_title_about_us))
+            .setMessage(getString(R.string.dialog_message_about_us))
+            .setPositiveButton(getString(R.string.dialog_button_ok), null)
             .show()
     }
 
     private fun showLogoutConfirmation() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(getString(R.string.dialog_title_logout))
+            .setMessage(getString(R.string.dialog_message_logout_confirmation))
+            .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                 // Clear all user data from SharedPreferences
                 UserDetails.clearUserData(this)
                 // Sign out from Firebase
@@ -331,7 +331,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(getString(R.string.dialog_button_no), null)
             .show()
     }
 

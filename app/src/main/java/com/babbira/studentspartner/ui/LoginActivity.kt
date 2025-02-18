@@ -53,12 +53,12 @@ class LoginActivity : AppCompatActivity() {
                     authViewModel.signInWithGoogle(firebaseCredential)
                 } else {
                     println("LoginActivity: No ID token found in credential")
-                    Toast.makeText(this, "No ID token found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_no_id_token), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 println("LoginActivity: Error processing sign-in result: ${e.message}")
                 println("LoginActivity: Stack trace: ${e.stackTraceToString()}")
-                Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_sign_in_failed_message, e.message), Toast.LENGTH_SHORT).show()
             }
         } else {
             println("LoginActivity: Sign-in result not OK. Result code: ${result.resultCode}")
@@ -122,13 +122,13 @@ class LoginActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     println("LoginActivity: Error launching sign-in: ${e.message}")
                     println("LoginActivity: Stack trace: ${e.stackTraceToString()}")
-                    Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_sign_in_failed_message, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
                 println("LoginActivity: Failed to begin sign-in: ${e.message}")
                 println("LoginActivity: Stack trace: ${e.stackTraceToString()}")
-                Toast.makeText(this, "Sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_sign_in_failed_message, e.message), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -145,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
                     is Resource.Success -> {
                         println("LoginActivity: Success state - User ID: ${resource.data?.uid}")
                         progressBar.visibility = View.GONE
-                        Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, getString(R.string.success_login), Toast.LENGTH_SHORT).show()
                         println("LoginActivity: Starting MainActivity")
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()

@@ -59,7 +59,7 @@ class AddNewMaterialFragment : Fragment() {
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             selectedPdfUri = it
-            binding.selectPdfButton.text = "PDF Selected"
+            binding.selectPdfButton.text = getString(R.string.pdf_selected)
             binding.selectPdfButton.setIconResource(R.drawable.ic_check)
         }
     }
@@ -72,7 +72,7 @@ class AddNewMaterialFragment : Fragment() {
         } else {
             Toast.makeText(
                 context,
-                "Storage permission is required to select PDF files",
+                getString(R.string.permission_storage_required_message),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -132,19 +132,19 @@ class AddNewMaterialFragment : Fragment() {
 
         when {
             title.isEmpty() -> {
-                binding.titleEditText.error = "Title is required"
+                binding.titleEditText.error = getString(R.string.error_title_required)
                 return false
             }
             description.isEmpty() -> {
-                binding.descriptionEditText.error = "Description is required"
+                binding.descriptionEditText.error = getString(R.string.error_description_required)
                 return false
             }
             chapter.isEmpty() -> {
-                binding.chapterInputLayout.error = "Chapter is required"
+                binding.chapterInputLayout.error = getString(R.string.error_chapter_required)
                 return false
             }
             selectedPdfUri == null -> {
-                Toast.makeText(context, "Please select a PDF file", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error_pdf_not_selected), Toast.LENGTH_SHORT).show()
                 return false
             }
         }
@@ -158,7 +158,7 @@ class AddNewMaterialFragment : Fragment() {
         val section = UserDetails.getUserSection(requireContext())
 
         if (college.isEmpty() || combination.isEmpty() || semester.isEmpty()) {
-            Toast.makeText(context, "Missing user details", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.error_missing_user_details), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -196,7 +196,7 @@ class AddNewMaterialFragment : Fragment() {
                     loaderManager.hideLoader()
                     binding.uploadProgressLayout.isVisible = false
                     binding.uploadButton.isEnabled = true
-                    Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.error_upload_failed_message, e.message), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -209,7 +209,7 @@ class AddNewMaterialFragment : Fragment() {
 
         if (subjectName == null) {
             Log.e("AddNewMaterial", "Subject name is null, cannot save material")
-            Toast.makeText(context, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.error_subject_name_missing), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -248,7 +248,7 @@ class AddNewMaterialFragment : Fragment() {
                 loaderManager.hideLoader()
                 binding.uploadProgressLayout.isVisible = false
                 binding.uploadButton.isEnabled = true
-                Toast.makeText(context, "Material uploaded successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.success_material_uploaded), Toast.LENGTH_SHORT).show()
                 listener?.onMaterialUploaded()
                 clearForm()
             }
@@ -257,7 +257,7 @@ class AddNewMaterialFragment : Fragment() {
                 loaderManager.hideLoader()
                 binding.uploadProgressLayout.isVisible = false
                 binding.uploadButton.isEnabled = true
-                Toast.makeText(context, "Failed to save material: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error_failed_to_save_material, e.message), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -266,7 +266,7 @@ class AddNewMaterialFragment : Fragment() {
         binding.descriptionEditText.text?.clear()
         binding.chapterDropdown.text?.clear()
         selectedPdfUri = null
-        binding.selectPdfButton.text = "Select PDF"
+        binding.selectPdfButton.text = getString(R.string.select_pdf)
         binding.selectPdfButton.setIconResource(R.drawable.ic_pdf)
         binding.uploadProgressLayout.isVisible = false  // Hide progress layout
         binding.uploadProgress.progress = 0  // Reset progress
@@ -307,9 +307,9 @@ class AddNewMaterialFragment : Fragment() {
 
     private fun showPermissionRationaleDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Permission Required")
-            .setMessage("Storage permission is required to select PDF files")
-            .setPositiveButton("Grant") { _, _ ->
+            .setTitle(getString(R.string.dialog_title_permission_required))
+            .setMessage(getString(R.string.dialog_message_storage_permission_rationale))
+            .setPositiveButton(getString(R.string.dialog_button_grant)) { _, _ ->
                 requestPermissionLauncher.launch(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         Manifest.permission.READ_MEDIA_IMAGES
@@ -318,7 +318,7 @@ class AddNewMaterialFragment : Fragment() {
                     }
                 )
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.dialog_button_cancel), null)
             .show()
     }
 

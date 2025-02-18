@@ -1,7 +1,5 @@
 package com.babbira.studentspartner.ui
 
-
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +14,6 @@ import com.babbira.studentspartner.databinding.ActivityClassmateDetailsBinding
 import com.babbira.studentspartner.utils.LoaderManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
 
 class ClassmateDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityClassmateDetailsBinding
@@ -83,13 +80,13 @@ class ClassmateDetailsActivity : AppCompatActivity() {
                             }
                             .addOnFailureListener { e ->
                                 loaderManager.hideLoader()
-                                Toast.makeText(this, "Error fetching classmates: ${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, getString(R.string.error_fetching_classmates, e.message), Toast.LENGTH_SHORT).show()
                             }
                     }
                 }
                 .addOnFailureListener { e ->
                     loaderManager.hideLoader()
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.error_generic, e.message), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -112,7 +109,7 @@ class ClassmateDetailsActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "WhatsApp not installed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.whatsapp_not_installed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -123,7 +120,7 @@ class ClassmateDetailsActivity : AppCompatActivity() {
             }
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(this, "Unable to make call", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.unable_to_make_call), Toast.LENGTH_SHORT).show()
         }
     }
 

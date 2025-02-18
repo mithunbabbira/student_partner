@@ -84,12 +84,12 @@ class ViewAllFragment : Fragment() {
 
     private fun showDeleteConfirmationDialog(material: SubjectMaterial) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Material")
-            .setMessage("Are you sure you want to delete this material?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(getString(R.string.dialog_title_delete_material))
+            .setMessage(getString(R.string.dialog_message_delete_confirmation))
+            .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                 deleteMaterial(material)
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(getString(R.string.dialog_button_no), null)
             .show()
     }
 
@@ -102,7 +102,7 @@ class ViewAllFragment : Fragment() {
         val subjectName = arguments?.getString(ARG_SUBJECT_NAME)
 
         if (subjectName == null) {
-            Toast.makeText(context, "Error: Subject name is missing", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.error_subject_name_missing), Toast.LENGTH_SHORT).show()
             binding.progressBar.isVisible = false
             return
         }
@@ -128,15 +128,15 @@ class ViewAllFragment : Fragment() {
                         materialAdapter.notifyDataSetChanged()
                         binding.tvEmptyState.isVisible = materialsList.isEmpty()
                         binding.progressBar.isVisible = false
-                        Toast.makeText(context, "Material deleted successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.success_material_deleted), Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener { e ->
                         binding.progressBar.isVisible = false
-                        Toast.makeText(context, "Failed to delete material: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.error_delete_material_failed, e.message), Toast.LENGTH_SHORT).show()
                     }
             } else {
                 binding.progressBar.isVisible = false
-                Toast.makeText(context, "Failed to delete file: ${storageTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error_delete_file_failed, storageTask.exception?.message), Toast.LENGTH_SHORT).show()
             }
         }
     }

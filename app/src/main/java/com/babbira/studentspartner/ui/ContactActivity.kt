@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.babbira.studentspartner.R
 import com.babbira.studentspartner.databinding.ActivityContactBinding
 
 class ContactActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class ContactActivity : AppCompatActivity() {
         // Setup toolbar
         setSupportActionBar(binding.toolbarLayout.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Contact Us"
+        supportActionBar?.title = getString(R.string.contact_us)
 
         setupClickListeners()
     }
@@ -26,14 +27,14 @@ class ContactActivity : AppCompatActivity() {
         binding.apply {
             callButton.setOnClickListener {
                 val intent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:8762623837")
+                    data = Uri.parse(getString(R.string.contact_phone_number_uri))
                 }
                 startActivity(intent)
             }
 
             emailButton.setOnClickListener {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = Uri.parse("mailto:mithunbabbira@gmail.com")
+                    data = Uri.parse(getString(R.string.contact_email_address_uri))
                 }
                 startActivity(intent)
             }

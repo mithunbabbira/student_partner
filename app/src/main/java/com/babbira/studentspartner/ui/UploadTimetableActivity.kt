@@ -29,7 +29,7 @@ class UploadTimetableActivity : AppCompatActivity() {
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             selectedPdfUri = it
-            binding.selectPdfButton.text = "PDF Selected"
+            binding.selectPdfButton.text = getString(R.string.pdf_selected)
             binding.uploadButton.isEnabled = true
         }
     }
@@ -96,7 +96,7 @@ class UploadTimetableActivity : AppCompatActivity() {
                 saveTimetableToFirestore(downloadUrl.toString(), timetableType, filename)
             }
             .addOnFailureListener { e ->
-                showError("Upload failed: ${e.message}")
+                showError(getString(R.string.upload_failed_message, e.message))
                 binding.uploadButton.isEnabled = true
                 binding.progressBar.isVisible = false
             }
@@ -109,7 +109,7 @@ class UploadTimetableActivity : AppCompatActivity() {
 
         val timetable = Timetable(
             id = UUID.randomUUID().toString(),
-            title = if (type == TimetableActivity.TYPE_CLASS) "Class Timetable" else "Exam Timetable",
+            title = if (type == TimetableActivity.TYPE_CLASS) getString(R.string.class_timetable) else getString(R.string.exam_timetable),
             filename = filename,
             pdfUrl = pdfUrl,
             addedBy = UserDetails.getUserName(this),
@@ -131,7 +131,7 @@ class UploadTimetableActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { e ->
-                showError("Failed to save: ${e.message}")
+                showError(getString(R.string.failed_to_save_message, e.message))
                 binding.uploadButton.isEnabled = true
                 binding.progressBar.isVisible = false
             }
