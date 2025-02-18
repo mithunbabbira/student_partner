@@ -128,8 +128,11 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun showImagePickerDialog() {
         MaterialAlertDialogBuilder(this)
-            .setTitle("Profile Picture")
-            .setItems(arrayOf("Choose from Gallery", "Remove Photo")) { _, which ->
+            .setTitle(getString(R.string.dialog_title_profile_picture))
+            .setItems(arrayOf(
+                getString(R.string.dialog_option_choose_from_gallery),
+                getString(R.string.dialog_option_remove_photo)
+            )) { _, which ->
                 when (which) {
                     0 -> getContent.launch("image/*")
                     1 -> removeProfileImage()
@@ -145,14 +148,14 @@ class ViewProfileActivity : AppCompatActivity() {
 
         if (userCollege.isEmpty() || userCombination.isEmpty()) {
             loaderManager.hideLoader()
-            Toast.makeText(this, "Please select college and combination first", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_select_college_and_combination), Toast.LENGTH_SHORT).show()
             return
         }
 
         val compressedImage = ImageUtils.compressImage(imageUri, contentResolver)
         if (compressedImage == null) {
             loaderManager.hideLoader()
-            Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_select_college_and_combination), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -162,12 +165,12 @@ class ViewProfileActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                     updateProfileImageUrl(downloadUri.toString())
-                    UserDetails.setProfileImageUrl(this,downloadUri.toString())
+                    UserDetails.setProfileImageUrl(this, downloadUri.toString())
                 }
             }
             .addOnFailureListener {
                 loaderManager.hideLoader()
-                Toast.makeText(this, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_upload_image_failed, getString(R.string.label_failed_to_process_image)), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -178,11 +181,11 @@ class ViewProfileActivity : AppCompatActivity() {
         userRef.update("profileImageUrl", imageUrl)
             .addOnSuccessListener {
                 loaderManager.hideLoader()
-                Toast.makeText(this, "Profile picture updated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.success_profile_picture_updated), Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 loaderManager.hideLoader()
-                Toast.makeText(this, "Failed to update profile: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_update_profile_failed, getString(R.string.label_failed_to_update_profile)), Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -192,7 +195,7 @@ class ViewProfileActivity : AppCompatActivity() {
         val userCombination = binding.combinationAutoComplete.text.toString()
 
         if (userCollege.isEmpty() || userCombination.isEmpty()) {
-            Toast.makeText(this, "College or combination not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error_college_or_combination_not_found), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -207,9 +210,9 @@ class ViewProfileActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     if (storageTask.isSuccessful && firestoreTask.isSuccessful) {
                         binding.profileImageView.setImageResource(R.drawable.ic_profile_placeholder)
-                        Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.success_profile_picture_removed), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Failed to remove profile picture", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.error_remove_profile_picture_failed), Toast.LENGTH_SHORT).show()
                     }
                 }
         }
@@ -250,7 +253,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 clearDependentFields()
                 viewModel.setSelectedCollege(selectedCollege)
                 viewModel.fetchCombination(selectedCollege)
-                binding.collegeInputLayout.setEndIconVisible(false)
+                binding.collegeInputLayout.isEndIconVisible = false
             }
 
             addTextChangedListener(object : TextWatcher {
@@ -264,7 +267,7 @@ class ViewProfileActivity : AppCompatActivity() {
                     val text = s?.toString() ?: ""
                     if (text.isEmpty()) {
                         viewModel.fetchColleges()
-                        binding.collegeInputLayout.setEndIconVisible(false)
+                        binding.collegeInputLayout.isEndIconVisible = false
                     } else {
                         viewModel.checkIfCollegeExists(text)
                     }
@@ -301,7 +304,7 @@ class ViewProfileActivity : AppCompatActivity() {
                     binding.collegeAutoComplete.text.toString(),
                     selectedCombination
                 )
-                binding.combinationInputLayout.setEndIconVisible(false)
+                binding.combinationInputLayout.isEndIconVisible = false
             }
 
             addTextChangedListener(object : TextWatcher {
@@ -315,7 +318,7 @@ class ViewProfileActivity : AppCompatActivity() {
                     val text = s?.toString() ?: ""
                     if (text.isEmpty()) {
                         viewModel.fetchCombination(binding.collegeAutoComplete.text.toString())
-                        binding.combinationInputLayout.setEndIconVisible(false)
+                        binding.combinationInputLayout.isEndIconVisible = false
                     } else {
                         viewModel.checkIfCombinationExists(text)
                     }
@@ -439,11 +442,11 @@ class ViewProfileActivity : AppCompatActivity() {
 
         when {
             !isCollegeValid -> {
-                binding.collegeInputLayout.error = "Please select a valid college from the list or add a new one"
+                binding.collegeInputLayout.error = getString(R.string.error_invalid_college)
                 return
             }
             !isCombinationValid -> {
-                binding.combinationInputLayout.error = "Please select a valid combination from the list or add a new one"
+                binding.combinationInputLayout.error = getString(R.string.error_invalid_combination)
                 return
             }
             else -> {
@@ -454,8 +457,8 @@ class ViewProfileActivity : AppCompatActivity() {
                 // Show confirmation dialog
                 DialogUtils.showConfirmationDialog(
                     context = this,
-                    title = "Update Profile",
-                    message = "Are you sure you want to update your profile?",
+                    title = getString(R.string.dialog_title_update_profile),
+                    message = getString(R.string.dialog_message_update_profile),
                     onPositiveClick = {
                         // Proceed with profile update
                         val name = binding.nameEditText.text.toString()
@@ -488,19 +491,19 @@ class ViewProfileActivity : AppCompatActivity() {
         }
 
         viewModel.showAddCollegeButton.observe(this) { show ->
-            binding.collegeInputLayout.setEndIconVisible(show)
+            binding.collegeInputLayout.isEndIconVisible = show
         }
 
         viewModel.showAddCombinationButton.observe(this) { show ->
-            binding.combinationInputLayout.setEndIconVisible(show)
+            binding.combinationInputLayout.isEndIconVisible = show
         }
 
         viewModel.showAddSemesterButton.observe(this) { show ->
-            binding.semesterInputLayout.setEndIconVisible(show)
+            binding.semesterInputLayout.isEndIconVisible = show
         }
 
         viewModel.showAddSectionButton.observe(this) { show ->
-            binding.sectionInputLayout.setEndIconVisible(show)
+            binding.sectionInputLayout.isEndIconVisible = show
         }
 
         viewModel.isUpdating.observe(this) { isUpdating ->
@@ -511,7 +514,7 @@ class ViewProfileActivity : AppCompatActivity() {
                 loaderManager.hideLoader()
                 finish()
             }
-            binding.updateProfileButton.text = if (isUpdating) "" else "Update Profile"
+            binding.updateProfileButton.text = if (isUpdating) "" else getString(R.string.button_update_profile)
         }
 
         viewModel.error.observe(this) { error ->
@@ -549,42 +552,42 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun showAddCollegeDialog(collegeName: String) {
         val dialogBinding = DialogAddItemBinding.inflate(layoutInflater)
-        dialogBinding.titleText.text = "Add New College"
+        dialogBinding.titleText.text = getString(R.string.dialog_title_add_college)
         dialogBinding.itemInput.setText(collegeName)
 
         MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
-            .setPositiveButton("Add") { dialog, _ ->
+            .setPositiveButton(getString(R.string.dialog_button_add), { dialog, _ ->
                 val finalCollegeName = dialogBinding.itemInput.text.toString().trim()
                 if (finalCollegeName.isNotEmpty()) {
                     viewModel.addNewCollege(finalCollegeName)
                     // Set the newly added college as selected
                     binding.collegeAutoComplete.setText(finalCollegeName, false)
-                    binding.collegeInputLayout.setEndIconVisible(false)
+                    binding.collegeInputLayout.isEndIconVisible = false
                     clearDependentFields()
                     viewModel.setSelectedCollege(finalCollegeName)
                     viewModel.fetchCombination(finalCollegeName)
                 }
                 dialog.dismiss()
-            }
-            .setNegativeButton("Cancel", null)
+            })
+            .setNegativeButton(getString(R.string.dialog_button_cancel), null)
             .show()
     }
 
     private fun showAddCombinationDialog(combinationName: String) {
         val dialogBinding = DialogAddItemBinding.inflate(layoutInflater)
-        dialogBinding.titleText.text = "Add New Combination"
+        dialogBinding.titleText.text = getString(R.string.dialog_title_add_combination)
         dialogBinding.itemInput.setText(combinationName)
 
         MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
-            .setPositiveButton("Add") { dialog, _ ->
+            .setPositiveButton(getString(R.string.dialog_button_add), { dialog, _ ->
                 val finalCombinationName = dialogBinding.itemInput.text.toString().trim()
                 if (finalCombinationName.isNotEmpty()) {
                     viewModel.addNewCombination(finalCombinationName)
                     // Set the newly added combination as selected
                     binding.combinationAutoComplete.setText(finalCombinationName, false)
-                    binding.combinationInputLayout.setEndIconVisible(false)
+                    binding.combinationInputLayout.isEndIconVisible = false
                     clearSemesterAndSection()
                     viewModel.setSelectedCombination(finalCombinationName)
                     viewModel.fetchSemesters(
@@ -593,8 +596,8 @@ class ViewProfileActivity : AppCompatActivity() {
                     )
                 }
                 dialog.dismiss()
-            }
-            .setNegativeButton("Cancel", null)
+            })
+            .setNegativeButton(getString(R.string.dialog_button_cancel), null)
             .show()
     }
 
