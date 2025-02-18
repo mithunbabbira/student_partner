@@ -10,14 +10,14 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Modern Material Theme Colors -->
-    <color name="primary">#FF5722</color>          <!-- Vibrant Orange-Red -->
+    <color name="primary">#1976D2</color>          <!-- Vibrant Orange-Red -->
     <color name="primary_dark">#E64A19</color>     <!-- Darker Orange-Red for status bar -->
     <color name="primary_light">#FFCCBC</color>    <!-- Light Orange -->
     <color name="accent">#9C27B0</color>           <!-- Rich Purple -->
     
     <!-- Surface and Background -->
     <color name="surface">#FFFFFF</color>          <!-- Pure White -->
-    <color name="background">#FFF3E0</color>       <!-- Very Light Orange Tint -->
+    <color name="background">#FFFFFF</color>       <!-- Very Light Orange Tint -->
     <color name="card_background">#FFFFFF</color>  <!-- Pure White -->
     
     <!-- Text Colors -->
@@ -34,4 +34,6 @@
     <color name="error">#F44336</color>            <!-- Red -->
     <color name="success">#4CAF50</color>          <!-- Green -->
     <color name="warning">#FFC107</color>          <!-- Yellow -->
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
 </resources>

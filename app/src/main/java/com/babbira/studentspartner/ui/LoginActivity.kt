@@ -3,6 +3,7 @@ package com.babbira.studentspartner.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -14,6 +15,7 @@ import com.babbira.studentspartner.R
 import com.babbira.studentspartner.auth.AuthRepository
 import com.babbira.studentspartner.auth.AuthViewModel
 import com.babbira.studentspartner.auth.AuthViewModelFactory
+import com.babbira.studentspartner.databinding.ActivityLoginBinding
 import com.babbira.studentspartner.utils.Resource
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -25,12 +27,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
     private lateinit var authViewModel: AuthViewModel
-    private lateinit var progressBar: View
-    private lateinit var googleSignInButton: SignInButton
-    private lateinit var auth: FirebaseAuth
+    private val auth = FirebaseAuth.getInstance()
 
     private val signInLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -67,16 +68,70 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        auth = FirebaseAuth.getInstance()
-        progressBar = findViewById(R.id.progressBar)
-        googleSignInButton = findViewById(R.id.google_sign_in_button)
-
+        // Initialize Google Sign-In early
         setupGoogleSignIn()
         setupViewModel()
-        setupClickListeners()
+        setupUI()
         observeAuthState()
+        
+        // Pre-warm the sign-in client
+        preWarmGoogleSignIn()
+    }
+
+    private fun setupUI() {
+        // Set up the app logo animation
+        binding.logoImage.apply {
+            alpha = 0f
+            translationY = -50f
+            animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(500)
+                .setInterpolator(DecelerateInterpolator(1.5f))
+                .start()
+        }
+
+        // Set up the welcome text animation
+        binding.welcomeText.apply {
+            alpha = 0f
+            animate()
+                .alpha(1f)
+                .setDuration(400)
+                .setStartDelay(200)
+                .start()
+        }
+
+        // Set up the subtitle text animation
+        binding.subtitleText.apply {
+            alpha = 0f
+            animate()
+                .alpha(1f)
+                .setDuration(400)
+                .setStartDelay(300)
+                .start()
+        }
+
+        // Set up the sign in button
+        binding.signInButton.apply {
+            alpha = 0f
+            scaleX = 0.9f
+            scaleY = 0.9f
+            animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(400)
+                .setStartDelay(400)
+                .setInterpolator(DecelerateInterpolator(1.5f))
+                .start()
+            
+            setOnClickListener {
+                signInWithGoogle()
+            }
+        }
     }
 
     private fun setupGoogleSignIn() {
@@ -88,12 +143,19 @@ class LoginActivity : AppCompatActivity() {
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    .setServerClientId(getString(R.string.default_android_client_id))
-                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(getString(R.string.default_web_client_id))
+                    .setFilterByAuthorizedAccounts(false) // Show all accounts
                     .build()
             )
+            .setAutoSelectEnabled(true) // Enable auto-select for faster selection
             .build()
-        println("LoginActivity: Created SignInRequest with Android client ID")
+        println("LoginActivity: Created SignInRequest with client ID")
+    }
+
+    private fun preWarmGoogleSignIn() {
+        // Pre-warm the sign-in process in the background
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnFailureListener { /* Ignore any failure during pre-warming */ }
     }
 
     private fun setupViewModel() {
@@ -102,14 +164,11 @@ class LoginActivity : AppCompatActivity() {
         authViewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
     }
 
-    private fun setupClickListeners() {
-        googleSignInButton.setOnClickListener {
-            signInWithGoogle()
-        }
-    }
-
     private fun signInWithGoogle() {
         println("LoginActivity: Starting Google Sign-In process")
+        binding.progressBar.visibility = View.VISIBLE
+        binding.signInButton.isEnabled = false
+
         oneTapClient.beginSignIn(signInRequest)
             .addOnSuccessListener { result ->
                 println("LoginActivity: Successfully got sign-in intent")
@@ -122,12 +181,16 @@ class LoginActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     println("LoginActivity: Error launching sign-in: ${e.message}")
                     println("LoginActivity: Stack trace: ${e.stackTraceToString()}")
+                    binding.progressBar.visibility = View.GONE
+                    binding.signInButton.isEnabled = true
                     Toast.makeText(this, getString(R.string.error_sign_in_failed_message, e.message), Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
                 println("LoginActivity: Failed to begin sign-in: ${e.message}")
                 println("LoginActivity: Stack trace: ${e.stackTraceToString()}")
+                binding.progressBar.visibility = View.GONE
+                binding.signInButton.isEnabled = true
                 Toast.makeText(this, getString(R.string.error_sign_in_failed_message, e.message), Toast.LENGTH_SHORT).show()
             }
     }
@@ -140,11 +203,11 @@ class LoginActivity : AppCompatActivity() {
                 when (resource) {
                     is Resource.Loading -> {
                         println("LoginActivity: Show loading state")
-                        progressBar.visibility = View.VISIBLE
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
                         println("LoginActivity: Success state - User ID: ${resource.data?.uid}")
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         Toast.makeText(this@LoginActivity, getString(R.string.success_login), Toast.LENGTH_SHORT).show()
                         println("LoginActivity: Starting MainActivity")
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
@@ -152,12 +215,12 @@ class LoginActivity : AppCompatActivity() {
                     }
                     is Resource.Error -> {
                         println("LoginActivity: Error state - ${resource.message}")
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         Toast.makeText(this@LoginActivity, resource.message, Toast.LENGTH_SHORT).show()
                     }
                     null -> {
                         println("LoginActivity: Null state")
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                     }
                 }
             }

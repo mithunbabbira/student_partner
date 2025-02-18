@@ -98,4 +98,7 @@
     <string name="error_delete_file_failed">Failed to delete file: %s</string>
     <string name="success_data_cleared">All data cleared successfully</string>
     <string name="error_clearing_data">Error clearing data</string>
+    <string name="welcome_to_students_partner">Welcome to Students Partner</string>
+    <string name="login_subtitle">Your one-stop solution for all academic needs</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
 </resources>
