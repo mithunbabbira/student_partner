@@ -10,7 +10,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Modern Material Theme Colors -->
-    <color name="primary">#1976D2</color>          <!-- Vibrant Orange-Red -->
+    <color name="primary">#E64A19</color>          <!-- Vibrant Orange-Red -->
     <color name="primary_dark">#E64A19</color>     <!-- Darker Orange-Red for status bar -->
     <color name="primary_light">#FFCCBC</color>    <!-- Light Orange -->
     <color name="accent">#9C27B0</color>           <!-- Rich Purple -->
