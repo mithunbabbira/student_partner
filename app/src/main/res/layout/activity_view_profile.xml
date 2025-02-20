@@ -65,13 +65,15 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Name">
+                android:hint="Name"
+                app:hintTextColor="@color/hint_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,13 +83,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Phone Number">
+                android:hint="Phone Number"
+                app:hintTextColor="@color/hint_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phoneEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone"/>
+                    android:inputType="phone"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,13 +103,15 @@
                 android:layout_marginTop="16dp"
                 android:hint="College"
                 app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_add">
+                app:endIconDrawable="@drawable/ic_add"
+                app:hintTextColor="@color/hint_color">
 
                 <AutoCompleteTextView
                     android:id="@+id/collegeAutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,13 +123,15 @@
                 android:layout_marginTop="16dp"
                 android:hint="Combination"
                 app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_add">
+                app:endIconDrawable="@drawable/ic_add"
+                app:hintTextColor="@color/hint_color">
 
                 <AutoCompleteTextView
                     android:id="@+id/combinationAutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,13 +141,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Semester">
+                android:hint="Semester"
+                app:hintTextColor="@color/hint_color">
 
                 <AutoCompleteTextView
                     android:id="@+id/semesterAutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,13 +159,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Section">
+                android:hint="Section"
+                app:hintTextColor="@color/hint_color">
 
                 <AutoCompleteTextView
                     android:id="@+id/sectionAutoComplete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColor="@color/primary_text"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
