@@ -360,7 +360,18 @@ class ViewProfileActivity : AppCompatActivity() {
                     binding.combinationAutoComplete.text.toString(),
                     selectedSemester
                 )
+                // Clear error when valid item selected
+                binding.semesterInputLayout.error = null
             }
+
+            // Add text change listener to clear error
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    binding.semesterInputLayout.error = null
+                }
+            })
 
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -390,7 +401,18 @@ class ViewProfileActivity : AppCompatActivity() {
             setOnItemClickListener { _, _, _, _ ->
                 val selectedSection = text.toString()
                 viewModel.setSelectedSection(selectedSection)
+                // Clear error when valid item selected
+                binding.sectionInputLayout.error = null
             }
+
+            // Add text change listener to clear error
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
+                    binding.sectionInputLayout.error = null
+                }
+            })
 
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -482,16 +504,24 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun showUpdateProfileConfirmation() {
         // Get the entered values
-        val enteredCollege = binding.collegeInputLayout.editText?.text.toString().trim()
-        val enteredCombination = binding.combinationInputLayout.editText?.text.toString().trim()
+        val enteredCollege = binding.collegeAutoComplete.text.toString().trim()
+        val enteredCombination = binding.combinationAutoComplete.text.toString().trim()
+        val enteredSemester = binding.semesterAutoComplete.text.toString().trim()
+        val enteredSection = binding.sectionAutoComplete.text.toString().trim()
         
         // Get the lists from ViewModel
         val collegeList = viewModel.colleges.value ?: emptyList()
         val combinationList = viewModel.combination.value ?: emptyList()
+        
+        // Define valid semesters and sections
+        val validSemesters = (1..10).map { "${it}st" }
+        val validSections = ('A'..'Z').map { it.toString() }
 
-        // Validate college and combination existence
+        // Validate existence in respective lists
         val isCollegeValid = collegeList.any { it.equals(enteredCollege, ignoreCase = true) }
         val isCombinationValid = combinationList.any { it.equals(enteredCombination, ignoreCase = true) }
+        val isSemesterValid = validSemesters.any { it.equals(enteredSemester, ignoreCase = true) }
+        val isSectionValid = validSections.any { it.equals(enteredSection, ignoreCase = true) }
 
         when {
             !isCollegeValid -> {
@@ -510,12 +540,24 @@ class ViewProfileActivity : AppCompatActivity() {
                 binding.combinationInputLayout.setEndIconDrawable(R.drawable.ic_add)
                 return
             }
+            !isSemesterValid -> {
+                // Show error for semester - must be from list
+                binding.semesterInputLayout.error = "Please select a valid semester from the dropdown list"
+                return
+            }
+            !isSectionValid -> {
+                // Show error for section - must be from list
+                binding.sectionInputLayout.error = "Please select a valid section from the dropdown list"
+                return
+            }
             else -> {
                 // Clear any previous errors or helper texts
                 binding.collegeInputLayout.error = null
                 binding.collegeInputLayout.helperText = null
                 binding.combinationInputLayout.error = null
                 binding.combinationInputLayout.helperText = null
+                binding.semesterInputLayout.error = null
+                binding.sectionInputLayout.error = null
 
                 // Show confirmation dialog
                 DialogUtils.showConfirmationDialog(
