@@ -799,6 +799,33 @@ class ViewProfileActivity : AppCompatActivity() {
             semesterAutoComplete.setText(profile.semester)
             sectionAutoComplete.setText(profile.section)
 
+            // Force the TextInputLayouts to update by simulating focus and then removing it
+            root.post {
+                // Simulate focus on each field to force the hint to float
+                val fields = listOf(
+                    nameEditText,
+                    phoneEditText,
+                    collegeAutoComplete,
+                    combinationAutoComplete,
+                    semesterAutoComplete,
+                    sectionAutoComplete
+                )
+                
+                fields.forEach { field ->
+                    if (!field.text.isNullOrEmpty()) {
+                        // Simulate focus
+                        field.requestFocus()
+                        // Clear focus after a short delay
+                        field.postDelayed({
+                            field.clearFocus()
+                        }, 10)
+                    }
+                }
+                
+                // Clear focus from all fields after processing
+                root.requestFocus()
+            }
+
             // Fetch dependent data if college exists
             profile.college?.let {
                 viewModel.setSelectedCollege(it)
