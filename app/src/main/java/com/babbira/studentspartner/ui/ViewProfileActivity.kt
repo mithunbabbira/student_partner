@@ -420,6 +420,58 @@ class ViewProfileActivity : AppCompatActivity() {
                 viewModel.setPhoneNumber(s?.toString() ?: "")
             }
         })
+
+        // Add text change listener for college field
+        binding.collegeAutoComplete.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                // Clear error and helper text when user starts typing
+                binding.collegeInputLayout.error = null
+                binding.collegeInputLayout.helperText = null
+                
+                val text = s?.toString() ?: ""
+                if (text.isNotEmpty()) {
+                    // Check if college exists in the list
+                    val collegeList = viewModel.colleges.value ?: emptyList()
+                    val collegeExists = collegeList.any { it.equals(text, ignoreCase = true) }
+                    
+                    if (!collegeExists) {
+                        // Show plus icon for adding new college
+                        binding.collegeInputLayout.isEndIconVisible = true
+                        binding.collegeInputLayout.setEndIconDrawable(R.drawable.ic_add)
+                    } else {
+                        binding.collegeInputLayout.isEndIconVisible = false
+                    }
+                }
+            }
+        })
+
+        // Add similar listener for combination field
+        binding.combinationAutoComplete.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                // Clear error and helper text when user starts typing
+                binding.combinationInputLayout.error = null
+                binding.combinationInputLayout.helperText = null
+                
+                val text = s?.toString() ?: ""
+                if (text.isNotEmpty()) {
+                    // Check if combination exists in the list
+                    val combinationList = viewModel.combination.value ?: emptyList()
+                    val combinationExists = combinationList.any { it.equals(text, ignoreCase = true) }
+                    
+                    if (!combinationExists) {
+                        // Show plus icon for adding new combination
+                        binding.combinationInputLayout.isEndIconVisible = true
+                        binding.combinationInputLayout.setEndIconDrawable(R.drawable.ic_add)
+                    } else {
+                        binding.combinationInputLayout.isEndIconVisible = false
+                    }
+                }
+            }
+        })
     }
 
     private fun setupUpdateButton() {
@@ -443,17 +495,27 @@ class ViewProfileActivity : AppCompatActivity() {
 
         when {
             !isCollegeValid -> {
-                binding.collegeInputLayout.error = getString(R.string.error_invalid_college)
+                // Replace error with helper text and show plus icon
+                binding.collegeInputLayout.error = null
+                binding.collegeInputLayout.helperText = "Please select a valid college from the list or add the college"
+                binding.collegeInputLayout.isEndIconVisible = true
+                binding.collegeInputLayout.setEndIconDrawable(R.drawable.ic_add)
                 return
             }
             !isCombinationValid -> {
-                binding.combinationInputLayout.error = getString(R.string.error_invalid_combination)
+                // Replace error with helper text and show plus icon
+                binding.combinationInputLayout.error = null
+                binding.combinationInputLayout.helperText = "Please select a valid combination from the list or add the combination"
+                binding.combinationInputLayout.isEndIconVisible = true
+                binding.combinationInputLayout.setEndIconDrawable(R.drawable.ic_add)
                 return
             }
             else -> {
-                // Clear any previous errors
+                // Clear any previous errors or helper texts
                 binding.collegeInputLayout.error = null
+                binding.collegeInputLayout.helperText = null
                 binding.combinationInputLayout.error = null
+                binding.combinationInputLayout.helperText = null
 
                 // Show confirmation dialog
                 DialogUtils.showConfirmationDialog(
