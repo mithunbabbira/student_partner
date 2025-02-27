@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Default Android colors (required) -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Primary Lavender Theme Colors -->
+    <color name="primary">#6B4EFF</color>  <!-- Vibrant Lavender -->
+    <color name="primary_dark">#5538EE</color>  <!-- Darker Lavender -->
+    <color name="primary_variant">#8B7EF8</color>  <!-- Light Lavender -->
+    <color name="primary_light">#E8E5FF</color>  <!-- Very Light Lavender -->
+    <color name="accent">#FF4081</color>  <!-- Pink accent -->
 
-    <!-- Modern Material Theme Colors -->
-    <color name="primary">#E64A19</color>          <!-- Vibrant Orange-Red -->
-    <color name="primary_dark">#E64A19</color>     <!-- Darker Orange-Red for status bar -->
-    <color name="primary_light">#FFCCBC</color>    <!-- Light Orange -->
-    <color name="accent">#9C27B0</color>           <!-- Rich Purple -->
-    
-    <!-- Surface and Background -->
-    <color name="surface">#FFFFFF</color>          <!-- Pure White -->
-    <color name="background">#FFFFFF</color>       <!-- Very Light Orange Tint -->
-    <color name="card_background">#FFFFFF</color>  <!-- Pure White -->
-    
+    <!-- Background Colors -->
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F8F9FE</color>  <!-- Very Light Lavender tint -->
+    <color name="card_background">#FFFFFF</color>
+
     <!-- Text Colors -->
-    <color name="text_primary">#212121</color>     <!-- Dark Gray -->
-    <color name="text_secondary">#757575</color>   <!-- Medium Gray -->
-    <color name="text_hint">#BDBDBD</color>        <!-- Light Gray -->
-    <color name="text_on_primary">#FFFFFF</color>  <!-- White text for primary colored backgrounds -->
+    <color name="text_primary">#1D1B20</color>  <!-- Almost Black -->
+    <color name="text_secondary">#49454F</color>  <!-- Dark Gray -->
+    <color name="text_tertiary">#79747E</color>  <!-- Medium Gray -->
+    <color name="primary_text">#1D1B20</color>  <!-- For backward compatibility -->
+    <color name="secondary_text">#49454F</color>  <!-- For backward compatibility -->
+    <color name="tertiary_text">#79747E</color>  <!-- For backward compatibility -->
+    <color name="hint_color">#79747E</color>  <!-- Same as tertiary for hints -->
+    <color name="white">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>  <!-- Green -->
+    <color name="error">#FF3B30</color>  <!-- Red -->
+    <color name="warning">#FF9500</color>  <!-- Orange -->
+
+    <!-- UI Feedback Colors -->
+    <color name="ripple">#1A6B4EFF</color>  <!-- 10% Primary -->
+    <color name="ripple_light">#1A6B4EFF</color>  <!-- 10% Primary -->
+    <color name="ripple_dark">#336B4EFF</color>  <!-- 20% Primary -->
+    <color name="disabled">#E0E0E0</color>  <!-- Light Gray -->
+    <color name="divider">#E8E8E8</color>  <!-- Very Light Gray -->
     
-    <!-- Component Colors -->
-    <color name="button_primary">@color/primary</color>
-    <color name="button_secondary">@color/accent</color>
-    <color name="divider">#EEEEEE</color>
-    <color name="ripple">#1A000000</color>
-    <color name="error">#F44336</color>            <!-- Red -->
-    <color name="success">#4CAF50</color>          <!-- Green -->
-    <color name="warning">#FFC107</color>          <!-- Yellow -->
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#757575</color>
-    <color name="hint_color">#757575</color>
+    <!-- Overlay Colors -->
+    <color name="scrim">#52000000</color>  <!-- 32% Black -->
+    <color name="overlay_light">#0FFFFFFF</color>  <!-- 6% White -->
+    <color name="overlay_dark">#1F000000</color>  <!-- 12% Black -->
 </resources>
