@@ -190,15 +190,28 @@ class TimetableActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_timetable, menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_upload -> {
-                startForResult.launch(
-                    Intent(this, UploadTimetableActivity::class.java).apply {
-                        putExtra(EXTRA_TIMETABLE_TYPE, intent.getStringExtra(EXTRA_TIMETABLE_TYPE))
-                    }
-                )
+                val isUserVerified = UserDetails.getUserVerified(this)
+                if (!isUserVerified) {
+                    // Optionally show a message to user about why they can't add subjects
+                    Toast.makeText(
+                        this,
+                        "Your account needs verification before you can add here.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+
+                }else{
+                    startForResult.launch(
+                        Intent(this, UploadTimetableActivity::class.java).apply {
+                            putExtra(EXTRA_TIMETABLE_TYPE, intent.getStringExtra(EXTRA_TIMETABLE_TYPE))
+                        }
+                    )
+                }
+
+
                 true
             }
             else -> super.onOptionsItemSelected(item)

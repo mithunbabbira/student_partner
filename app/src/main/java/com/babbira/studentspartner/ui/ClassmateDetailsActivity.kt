@@ -12,6 +12,7 @@ import com.babbira.studentspartner.R
 import com.babbira.studentspartner.adapters.ClassmatesAdapter
 import com.babbira.studentspartner.databinding.ActivityClassmateDetailsBinding
 import com.babbira.studentspartner.utils.LoaderManager
+import com.babbira.studentspartner.utils.UserDetails
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -102,7 +103,17 @@ class ClassmateDetailsActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun openWhatsApp(phone: String) {
+        val isUserVerified = UserDetails.getUserVerified(this)
+
+        if (!isUserVerified) {
+            Toast.makeText(this, getString(R.string.please_verify_your_profile), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         try {
             val phoneNumber = if (phone.startsWith("+")) phone else "+91$phone"
             val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber")
@@ -114,6 +125,14 @@ class ClassmateDetailsActivity : AppCompatActivity() {
     }
 
     private fun dialPhoneNumber(phone: String) {
+        val isUserVerified = UserDetails.getUserVerified(this)
+
+        if (!isUserVerified) {
+            Toast.makeText(this, getString(R.string.please_verify_your_profile), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         try {
             val intent = Intent(Intent.ACTION_DIAL).apply {
                 data = Uri.parse("tel:$phone")

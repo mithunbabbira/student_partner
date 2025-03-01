@@ -52,6 +52,29 @@ class ViewMaterialActivity : AppCompatActivity(), AddNewMaterialListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        updateUIBasedOnVerificationStatus()
+    }
+
+    private fun updateUIBasedOnVerificationStatus() {
+        // Get verification status from SharedPreferences
+        val isUserVerified = UserDetails.getUserVerified(this)
+
+        // Show or hide the add subject button based on verification status
+        binding.btnAddNew.visibility = if (isUserVerified) View.VISIBLE else View.GONE
+
+        if (!isUserVerified) {
+            // Optionally show a message to user about why they can't add subjects
+            Toast.makeText(
+                this,
+                "Your account needs verification before you can add pdf here.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

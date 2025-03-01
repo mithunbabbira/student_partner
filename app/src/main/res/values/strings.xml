@@ -17,6 +17,10 @@
     <string name="exam_timetable">Exam Timetable</string>
 
     <string name="loading">Loading...</string>
+    <string name="please_verify_your_profile">Please verify your profile</string>
+
+
+
 
     <string name="error_invalid_college">Please select a valid college from the list</string>
     <string name="error_invalid_combination">Please select a valid combination from the list</string>
