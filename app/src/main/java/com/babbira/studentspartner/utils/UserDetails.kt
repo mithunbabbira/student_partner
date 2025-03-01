@@ -12,6 +12,8 @@ object UserDetails {
         return getPreferences(context).edit()
     }
 
+    private const val KEY_USER_VERIFIED = "user_verified"
+
     // User Name
     fun setUserName(context: Context, userName: String) {
         getEditor(context).apply {
@@ -130,6 +132,18 @@ object UserDetails {
 
     fun getProfileImageUrl(context: Context): String {
         return getPreferences(context).getString(Constants.PreferenceKeys.USER_PROFILE_IMAGE, "") ?: ""
+    }
+
+    // User Verified
+    fun setUserVerified(context: Context, verified: Boolean) {
+        getEditor(context).apply {
+            putBoolean(KEY_USER_VERIFIED, verified)
+            apply()
+        }
+    }
+    
+    fun getUserVerified(context: Context): Boolean {
+        return getPreferences(context).getBoolean(KEY_USER_VERIFIED, false)
     }
 
     // Clear all user data

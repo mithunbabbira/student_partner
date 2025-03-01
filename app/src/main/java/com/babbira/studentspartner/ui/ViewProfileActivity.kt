@@ -243,6 +243,7 @@ class ViewProfileActivity : AppCompatActivity() {
             setEndIconOnClickListener {
                 val newCollegeName = binding.collegeAutoComplete.text.toString().trim()
                 if (newCollegeName.isNotEmpty()) {
+                    viewModel.setUserVerified(false)
                     showAddCollegeDialog(newCollegeName)
                 }
             }
@@ -251,6 +252,12 @@ class ViewProfileActivity : AppCompatActivity() {
         binding.collegeAutoComplete.apply {
             setOnItemClickListener { _, _, _, _ ->
                 val selectedCollege = text.toString()
+                val originalCollege = viewModel.userProfile.value?.college ?: ""
+                
+                if (selectedCollege != originalCollege) {
+                    viewModel.setUserVerified(false)
+                }
+                
                 clearDependentFields()
                 viewModel.setSelectedCollege(selectedCollege)
                 viewModel.fetchCombination(selectedCollege)
@@ -258,14 +265,24 @@ class ViewProfileActivity : AppCompatActivity() {
             }
 
             addTextChangedListener(object : TextWatcher {
+                private var previousValue = ""
+                
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    binding.collegeInputLayout.error = null
+                    previousValue = s?.toString() ?: ""
                 }
                 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 
                 override fun afterTextChanged(s: Editable?) {
                     val text = s?.toString() ?: ""
+                    
+                    if (text != previousValue) {
+                        val originalCollege = viewModel.userProfile.value?.college ?: ""
+                        if (text != originalCollege) {
+                            viewModel.setUserVerified(false)
+                        }
+                    }
+                    
                     if (text.isEmpty()) {
                         viewModel.fetchColleges()
                         binding.collegeInputLayout.isEndIconVisible = false
@@ -291,6 +308,7 @@ class ViewProfileActivity : AppCompatActivity() {
             setEndIconOnClickListener {
                 val newCombinationName = binding.combinationAutoComplete.text.toString().trim()
                 if (newCombinationName.isNotEmpty()) {
+                    viewModel.setUserVerified(false)
                     showAddCombinationDialog(newCombinationName)
                 }
             }
@@ -299,6 +317,12 @@ class ViewProfileActivity : AppCompatActivity() {
         binding.combinationAutoComplete.apply {
             setOnItemClickListener { _, _, _, _ ->
                 val selectedCombination = text.toString()
+                val originalCombination = viewModel.userProfile.value?.combination ?: ""
+                
+                if (selectedCombination != originalCombination) {
+                    viewModel.setUserVerified(false)
+                }
+                
                 clearSemesterAndSection()
                 viewModel.setSelectedCombination(selectedCombination)
                 viewModel.fetchSemesters(
@@ -309,14 +333,24 @@ class ViewProfileActivity : AppCompatActivity() {
             }
 
             addTextChangedListener(object : TextWatcher {
+                private var previousValue = ""
+                
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    binding.combinationInputLayout.error = null
+                    previousValue = s?.toString() ?: ""
                 }
                 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 
                 override fun afterTextChanged(s: Editable?) {
                     val text = s?.toString() ?: ""
+                    
+                    if (text != previousValue) {
+                        val originalCombination = viewModel.userProfile.value?.combination ?: ""
+                        if (text != originalCombination) {
+                            viewModel.setUserVerified(false)
+                        }
+                    }
+                    
                     if (text.isEmpty()) {
                         viewModel.fetchCombination(binding.collegeAutoComplete.text.toString())
                         binding.combinationInputLayout.isEndIconVisible = false
@@ -428,13 +462,30 @@ class ViewProfileActivity : AppCompatActivity() {
 
     private fun setupTextChangeListeners() {
         binding.nameEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            private var previousValue = ""
+            
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                previousValue = s?.toString() ?: ""
+            }
+            
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setUserName(s?.toString() ?: "")
+                val text = s?.toString() ?: ""
+                
+                // Check if name has changed
+                if (text != previousValue) {
+                    val originalName = viewModel.userProfile.value?.name ?: ""
+                    if (text != originalName) {
+                        viewModel.setUserVerified(false) // Set userVerified to false when name changes
+                    }
+                }
+                
+                viewModel.setUserName(text)
             }
         })
 
+        // Keep existing phone change listener without modifying userVerified
         binding.phoneEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

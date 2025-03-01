@@ -76,6 +76,8 @@ class ViewProfileViewModel(
     private val _isUpdating = MutableLiveData<Boolean>()
     val isUpdating: LiveData<Boolean> = _isUpdating
 
+    private var userVerified = false
+
     init {
         fetchUserProfile()
     }
@@ -94,6 +96,7 @@ class ViewProfileViewModel(
                         selectedSection = it.section ?: ""
                         userName = it.name ?: ""
                         phoneNumber = it.phone ?: ""
+                        userVerified = it.userVerified
                         validateProfile()
                     }
                     _isLoading.value = false
@@ -306,6 +309,7 @@ class ViewProfileViewModel(
                 "combination" to selectedCombination,
                 "semester" to selectedSemester,
                 "section" to selectedSection,
+                "userVerified" to userVerified,
                 "updatedAt" to FieldValue.serverTimestamp()
             )
 
@@ -319,5 +323,9 @@ class ViewProfileViewModel(
                     _isUpdating.value = false
                 }
         }
+    }
+
+    fun setUserVerified(verified: Boolean) {
+        userVerified = verified
     }
 } 
