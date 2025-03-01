@@ -252,6 +252,7 @@ class MainActivity : AppCompatActivity() {
                 setUserCombination(this@MainActivity, document.getString("combination") ?: "")
                 setUserSemester(this@MainActivity, document.getString("semester") ?: "")
                 setUserSection(this@MainActivity, document.getString("section") ?: "")
+                setUserVerified(this@MainActivity, document.getBoolean("userVerified") ?: false)
                 setLoggedIn(this@MainActivity, true)
             }
             
