@@ -29,6 +29,7 @@ import androidx.core.view.GravityCompat
 import com.babbira.studentspartner.utils.LoaderManager
 import com.bumptech.glide.Glide
 import android.widget.ImageView
+import android.view.View
 
 
 class MainActivity : AppCompatActivity() {
@@ -76,7 +77,9 @@ class MainActivity : AppCompatActivity() {
         checkUserProfile() // Check profile every time activity resumes
         // Update navigation header with user info
         updateNavigationHeader()
-
+        
+        // Check user verification status and update UI
+        updateUIBasedOnVerificationStatus()
     }
 
     private fun setupRecyclerView() {
@@ -252,9 +255,12 @@ class MainActivity : AppCompatActivity() {
                 setUserCombination(this@MainActivity, document.getString("combination") ?: "")
                 setUserSemester(this@MainActivity, document.getString("semester") ?: "")
                 setUserSection(this@MainActivity, document.getString("section") ?: "")
-                setUserVerified(this@MainActivity, document.getBoolean("userVerified") ?: false)
+                setUserVerified(this@MainActivity, document.getBoolean("userVerified") ?: false) // Save the userVerified status
                 setLoggedIn(this@MainActivity, true)
             }
+            
+            // Update UI based on the new verification status
+            updateUIBasedOnVerificationStatus()
             
             Log.d("MainActivity", "User details saved to SharedPreferences")
         } catch (e: Exception) {
@@ -353,6 +359,23 @@ class MainActivity : AppCompatActivity() {
                     }
                 )
             }
+        }
+    }
+
+    private fun updateUIBasedOnVerificationStatus() {
+        // Get verification status from SharedPreferences
+        val isUserVerified = UserDetails.getUserVerified(this)
+        
+        // Show or hide the add subject button based on verification status
+        binding.addNewSubjectButton.visibility = if (isUserVerified) View.VISIBLE else View.GONE
+        
+        if (!isUserVerified) {
+            // Optionally show a message to user about why they can't add subjects
+            Toast.makeText(
+                this,
+                "Your account needs verification before you can add subjects.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
