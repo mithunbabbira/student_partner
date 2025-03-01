@@ -107,13 +107,10 @@ class ClassmateDetailsActivity : AppCompatActivity() {
 
     private fun openWhatsApp(phone: String) {
         val isUserVerified = UserDetails.getUserVerified(this)
-
         if (!isUserVerified) {
             Toast.makeText(this, getString(R.string.please_verify_your_profile), Toast.LENGTH_SHORT).show()
             return
         }
-
-
         try {
             val phoneNumber = if (phone.startsWith("+")) phone else "+91$phone"
             val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber")
