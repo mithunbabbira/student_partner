@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.babbira.studentspartner"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0_dev_ui"
         multiDexEnabled = true
