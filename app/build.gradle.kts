@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.com.google.firebase.firebase.firestore.ktx)
     implementation(libs.google.firebase.storage.ktx)
     implementation(libs.google.firebase.crashlytics.ktx)
+    implementation(libs.firebase.messaging.ktx)
 
     // Explicitly enforce firebase-common version from BoM (Optional, try removing if still failing)
     // implementation("com.google.firebase:firebase-common")
@@ -101,11 +102,11 @@ dependencies {
 
     implementation (libs.androidx.coordinatorlayout)
 
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
 
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
     
 
 }

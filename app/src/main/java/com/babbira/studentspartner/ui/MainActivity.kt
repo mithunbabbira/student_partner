@@ -30,6 +30,7 @@ import com.babbira.studentspartner.utils.LoaderManager
 import com.bumptech.glide.Glide
 import android.widget.ImageView
 import android.view.View
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class MainActivity : AppCompatActivity() {
@@ -264,6 +265,15 @@ class MainActivity : AppCompatActivity() {
                 setUserSemester(this@MainActivity, document.getString("semester") ?: "")
                 setUserSection(this@MainActivity, document.getString("section") ?: "")
                 setUserVerified(this@MainActivity, document.getBoolean("userVerified") ?: false) // Save the userVerified status
+                
+                // Check if FCM token exists in the document and save it
+                if (document.contains("FCM")) {
+                    setUserFCMToken(this@MainActivity, document.getString("FCM") ?: "")
+                } else {
+                    // Get new FCM token if not in document
+                    retrieveAndSaveFCMToken(currentUser.uid)
+                }
+                
                 setLoggedIn(this@MainActivity, true)
             }
 
@@ -277,6 +287,30 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.error_saving_user_details),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private fun retrieveAndSaveFCMToken(userId: String) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                
+                // Save token to SharedPreferences
+                UserDetails.setUserFCMToken(this, token)
+                
+                // Optionally update Firestore with the token
+                db.collection("users")
+                    .document(userId)
+                    .update("FCM", token)
+                    .addOnSuccessListener {
+                        Log.d("MainActivity", "FCM token updated in Firestore")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("MainActivity", "Error updating FCM token", e)
+                    }
+            } else {
+                Log.e("MainActivity", "Failed to get FCM token", task.exception)
+            }
         }
     }
 

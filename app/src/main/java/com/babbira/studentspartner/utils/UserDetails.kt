@@ -146,6 +146,20 @@ object UserDetails {
         return getPreferences(context).getBoolean(KEY_USER_VERIFIED, false)
     }
 
+    // FCM Token
+    private const val KEY_FCM_TOKEN = "fcm_token"
+    
+    fun setUserFCMToken(context: Context, token: String) {
+        getEditor(context).apply {
+            putString(KEY_FCM_TOKEN, token)
+            apply()
+        }
+    }
+    
+    fun getUserFCMToken(context: Context): String {
+        return getPreferences(context).getString(KEY_FCM_TOKEN, "") ?: ""
+    }
+
     // Clear all user data
     fun clearUserData(context: Context) {
         // Clear SharedPreferences
