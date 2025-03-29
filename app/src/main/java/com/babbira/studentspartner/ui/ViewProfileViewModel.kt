@@ -69,6 +69,8 @@ class ViewProfileViewModel(
     private var userName: String = ""
     private var phoneNumber: String = ""
     private var selectedSection: String = ""
+    private var userRole: String = "STUDENT"
+
 
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
@@ -310,6 +312,7 @@ class ViewProfileViewModel(
                 "semester" to selectedSemester,
                 "section" to selectedSection,
                 "userVerified" to userVerified,
+                "userRole" to userRole,
                 "updatedAt" to FieldValue.serverTimestamp()
             )
 
